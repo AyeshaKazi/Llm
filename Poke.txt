@@ -1,0 +1,7 @@
+Generate Automated Test Cases: From a port scan identifying ports 80 and 22, the system creates tests like running dirb on port 80 and checking for SSH vulnerabilities on port 22.
+
+Generate Code for Penetration Testing: Automatically produces scripts for these tasks, such as a dirb script for port 80 and an SSH vulnerability scanner for port 22.
+
+Summarize Test Results: Reports findings, such as hidden directories from dirb on port 80 and a vulnerability on port 22 (e.g., CVE-2018-15473).
+
+Overall Activity Summary: Compiles a report summarizing all penetration tests, noting open ports, found vulnerabilities, and recommended actions.

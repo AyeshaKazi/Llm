@@ -15,3 +15,47 @@ Tagging: Global roles for compliance, IT security, and audit to apply tags acros
 Model Deployment: Independent scalable container deployment for inference endpoints.
 Model Propagation: Supports non-prod to production for traditional models.
 Reporting: Export model metadata to Snowflake via StreamSets for reporting and dashboards."
+
+ML Model Inventory & Control Attestations and Reporting
+Tags enforcement through the SDLC/MLOps process, additional tags can be added per new requirements
+Registration
+•Model.Owner
+• Model. Application
+•Model. Type
+• Model. Source
+•Business. Usecase
+•Business. NIl
+•Application Name*
+Enforce mandatory tags at the start of model life-cycle, tracks information about the owner and model source, execute Model verification checks to certify model for enterprise grade adoption*
+Development
+• Model. Config
+• Model Documentation
+•Model Access
+•Business. RiskTier
+Active Development phase, model documentation and observations are recorded, application owner can share the model with other teams
+
+
+UAT
+•Business. SignOff
+•Business. ReviewDate
+Captures Business Signoffs and model review dates
+Production
+• SDLC.ChangeTicket
+•Application. ConsumerInstance*
+• Application IntendedUsage
+•Application UsageApprovedBy
+Change ticket validation, tag to application CMDB instance, model can be shared across use cases
+
+
+Our MLflow tool enforces essential tags throughout the SDLC/MLOps process, ensuring comprehensive traceability and compliance. Starting from model registration, through development, UAT, and into production, it captures critical information at each stage. This includes verifying model readiness, documenting development, obtaining business sign-offs, and validating change tickets, thereby supporting enterprise-grade adoption and seamless integration across use cases.
+
+Slide 4: Tags Enforcement through the SDLC/MLOps Process
+
+"Our MLflow tool enforces different types of tags at each stage of the SDLC/MLOps process:
+
+Registration: Captures ownership, application details, and model source information.
+Development: Records model configurations, documentation, and risk assessments.
+UAT: Captures business sign-offs and review dates.
+Production: Validates change tickets and tags application usage and approvals.
+This ensures comprehensive tracking and compliance throughout the model lifecycle."
+

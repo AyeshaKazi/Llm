@@ -3,34 +3,15 @@ Slide 2: Need and Advantages of the Tool
 "With new regulatory frameworks like the EU AI Act emphasizing human rights, sustainability, transparency, and risk management, robust governance for AI and ML models is crucial. Our enhanced MLflow tool supports this by providing comprehensive visibility into AI use cases, identifying key stakeholders, and attesting to risk tiers based on business materiality and ethical considerations. It tracks all approvals and changes from registration to production, ensuring accountability. Additionally, it offers detailed reporting capabilities, including model consumption telemetry, phase-based views, and comprehensive search and audit reports."
 
 
-ML Model Inventory & Control Attestations and Reporting
-NOMIURA
-for recording inventory and control metadata against model/versions
-Solution Overview - Using open-source MLFlow as Model repository with multi-tenant RBAC controls, HA and DR capability
-Features
-Design
-• Open source MLFlow repository emulated for multi-tenant implementation with LDAP integration, RBAC
-controls, HA and DR capabilities
-CICD Pipeline
-• Import LLMs and Embedding Models from Huggingface into MLFlow with mandatory tags
-LM Ensone
-• Inventory and control attestations supported vi CI/CD pipelines as well
-aws
-via
-tagging - to
-aws
-• Support for global role(s) for teams such as compliance,
-IT Security and audit to apply tags across models in the repository
-• Ability to deploy model
-inference
-endpoints as
-independently scalable containers
-Hugging Face
-to
-• Supports model/endpoint propagation from non-prod to Production for traditional models
-• Exporting Model
-metadata
-Into
-Snowflake
-via
-StreamSets for reporting/dashboarding 
+
+Slide 3: Solution Overview and Features
+
+"Our solution leverages open-source MLflow as a model repository, enhanced with multi-tenant RBAC controls, high availability, and disaster recovery capabilities. Key features include:
+
+Design: Emulated MLflow repository for multi-tenant use with LDAP integration, RBAC controls, and HA/DR.
+CICD Pipeline: Import LLMs and Embedding Models from Huggingface with mandatory tags.
+Inventory and Control Attestations: Supported via CI/CD pipelines.
+Tagging: Global roles for compliance, IT security, and audit to apply tags across models.
+Model Deployment: Independent scalable container deployment for inference endpoints.
+Model Propagation: Supports non-prod to production for traditional models.
+Reporting: Export model metadata to Snowflake via StreamSets for reporting and dashboards."

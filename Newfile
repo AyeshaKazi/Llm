@@ -59,3 +59,16 @@ UAT: Captures business sign-offs and review dates.
 Production: Validates change tickets and tags application usage and approvals.
 This ensures comprehensive tracking and compliance throughout the model lifecycle."
 
+
+Slide 5: Critical Features of the Tool
+
+"Our enhanced MLflow tool offers several critical features to support our needs:
+
+Authentication: Integrates with Nomura LDAP, enhancing RBAC on artifacts.
+Object Tagging: Embeds tags throughout the model lifecycle for effective inventory and controls reporting.
+Model Management: Integrates with SDLC, ensuring metadata completeness and mandatory approvals through tags and aliases.
+Huggingface Integration: Facilitates model downloads via a dedicated pipeline.
+Disaster Recovery and High Availability: Ensures these capabilities are mandatory in production.
+These features collectively enhance the robustness and reliability of our ML model management."
+
+

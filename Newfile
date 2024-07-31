@@ -1,0 +1,3 @@
+Slide 2: Need and Advantages of the Tool
+
+"With new regulatory frameworks like the EU AI Act emphasizing human rights, sustainability, transparency, and risk management, robust governance for AI and ML models is crucial. Our enhanced MLflow tool supports this by providing comprehensive visibility into AI use cases, identifying key stakeholders, and attesting to risk tiers based on business materiality and ethical considerations. It tracks all approvals and changes from registration to production, ensuring accountability. Additionally, it offers detailed reporting capabilities, including model consumption telemetry, phase-based views, and comprehensive search and audit reports."

@@ -1,0 +1,19 @@
+Hello everyone,
+
+This video presents a crucial component of the AI regulation and controls framework: the ML Model Repository, which is used for inventory and control attestations with reporting.
+
+Before we begin, let’s briefly understand the need for inventory and control attestations within the AI regulations and control framework. With new regulatory frameworks, such as the EU AI Act, emphasizing human rights, sustainability, transparency, and risk management, robust governance of AI and ML models is essential. Adequate oversight of AI and ML model use cases is necessary, including inventories and dashboards, identification of high-risk models, models handling personal data, risk tiers based on business materiality and ethical considerations, and third-party versus in-house developed models. Our enhanced MLflow platform aids in establishing these controls. Let's look at the solution overview.
+
+To implement the ML Model Repository, we are leveraging MLflow, an open-source platform. We have extended the functionality of MLflow by adding support for multi-tenancy, high availability, and disaster recovery to accommodate inventory, control attestation, and reporting functionality.
+
+The ML Model Repository is central to the MLOps and LLMOps processes, where at each stage, interactions occur with the repository to register necessary model performance attributes and key attestations aligned with the specific development stage. Additionally, there is scope to import necessary information directly from ServiceNow workflows.
+
+For generative AI use cases, we typically leverage off-the-shelf LLM models imported from external open-source repositories. We have developed import model APIs that allow important metadata to be tagged to the models in the repository at the time of importing LLM and embedding models from external sources such as HuggingFace. We will not be demonstrating this step today as the model import process can take over 20 minutes, depending on the model size.
+
+Now, let’s quickly examine the inventory and control attestation functionality within MLflow.
+
+Demo
+
+Next, we have CI/CD pipelines and ServiceNow integrations to deploy models across different MLflow environments and register appropriate control information in the model repository.
+
+Finally, reporting: all registered metadata is collected in an analytical warehouse, providing stakeholders with a view of the models in production, comprehensive search and analysis of the model inventory, and detailed audit reports for each individual model.

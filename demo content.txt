@@ -1,0 +1,21 @@
+Hello everyone,
+
+In this video, we’ll explore a key component of the AI regulation and controls framework: the ML Model Repository, essential for inventory and control attestations with reporting.
+
+With the rise of regulatory frameworks like the EU AI Act, which focus on human rights, transparency, and risk management, strong governance of AI and ML models is crucial. This includes oversight of high-risk models, data privacy, and ethical considerations. Our enhanced MLflow platform supports these needs.
+
+We’ve extended MLflow, an open-source platform, to include multi-tenancy, high availability, and disaster recovery, ensuring robust inventory and control attestation capabilities.
+
+The ML Model Repository plays a central role in MLOps and LLMOps, logging model performance and attestations at every development stage. We’ve also integrated options for importing data from ServiceNow workflows.
+
+For generative AI, we utilize off-the-shelf LLM models from sources like HuggingFace, tagging essential metadata during import. While we won’t demo this today due to time constraints, it’s an important feature.
+
+Let’s now review the inventory and control attestation functions within MLflow.
+
+Demo
+
+We also have CI/CD pipelines and ServiceNow integrations to deploy models across environments, logging control details in the repository.
+
+Finally, comprehensive reporting gathers all metadata in an analytical warehouse, providing insights into production models and detailed audit reports.
+
+This concludes our demonstration. Thank you for your attention. Any questions?

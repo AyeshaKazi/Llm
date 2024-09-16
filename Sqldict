@@ -1,0 +1,29 @@
+queries = {
+    "query1": {"name": "customers", "condition": "id = 1", "column": "name"},
+    "query2": {"name": "customers", "condition": "email = 'example@example.com'", "column": "email"},
+    "query3": {"name": "orders", "condition": "order_id = 101", "column": "status"},
+    "query4": {"name": "orders", "condition": "order_id = 102", "column": "delivery_date"},
+    "query5": {"name": "products", "condition": "product_id = 200", "column": "price"},
+    "query6": {"name": "customers", "condition": "phone = '123-456-7890'", "column": "phone"},
+    # Assume there are more queries...
+}
+
+def find_queries_with_same_table(queries):
+    # Dictionary to group queries by table name
+    table_groups = {}
+
+    # Iterate through all queries and group them by their table (name)
+    for query_key, query_data in queries.items():
+        table_name = query_data['name']
+        if table_name not in table_groups:
+            table_groups[table_name] = [query_key]
+        else:
+            table_groups[table_name].append(query_key)
+
+    # Output the queries that have the same table (more than one query per table)
+    for table_name, query_list in table_groups.items():
+        if len(query_list) > 1:
+            print(f"Table '{table_name}' is involved in the following queries: {', '.join(query_list)}")
+
+# Execute the function
+find_queries_with_same_table(queries)

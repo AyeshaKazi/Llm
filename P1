@@ -1,4 +1,57 @@
 www.kaggle.com/datasets/szrlee/stock-time-series-20050101-to-20171231
+from snowflake.snowpark import Session
+from snowflake.snowpark.functions import col, lag, avg, stddev, when
+from snowflake.snowpark.types import FloatType, StructType, StructField, TimestampType
+from snowflake.ml.modeling import AnomalyDetector
+from snowflake.ml.feature_store import FeatureStore
+
+# Establish Snowflake session
+connection_params = {
+    "account": "<your_account>",
+    "user": "<your_user>",
+    "password": "<your_password>",
+    "role": "<your_role>",
+    "warehouse": "<your_warehouse>",
+    "database": "<your_database>",
+    "schema": "<your_schema>"
+}
+session = Session.builder.configs(connection_params).create()
+
+# Load data into Snowflake table
+df = session.table("STOCK_PRICES")
+
+# Step 1: Create lag-based rolling averages (manual calculation)
+window_size = 5
+
+# Calculate lag and rolling features manually
+for i in range(1, window_size + 1):
+    df = df.with_column(f"lag_close_{i}", lag(col("close"), i).over())
+
+# Create a rolling average and standard deviation manually
+df_with_features = df.with_columns([
+    avg([col(f"lag_close_{i}") for i in range(1, window_size + 1)]).alias("rolling_avg"),
+    stddev([col(f"lag_close_{i}") for i in range(1, window_size + 1)]).alias("rolling_stddev")
+])
+
+# Step 2: Feature Engineering - Z-score for anomaly detection
+df_with_features = df_with_features.with_column(
+    "z_score", 
+    (col("close") - col("rolling_avg")) / col("rolling_stddev")
+)
+
+# Step 3: Store Features in Feature Store
+feature_store = FeatureStore(session=session)
+feature_store.create_or_replace("financial_features", df_with_features, primary_key="date")
+
+# Fetch stored features (to check storage)
+stored_features = feature_store.get_features("financial_features")
+stored_features.show()
+
+
+
+
+
+
 
 
 from snowflake.snowpark import Session

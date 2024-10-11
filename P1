@@ -1,3 +1,6 @@
+www.kaggle.com/datasets/szrlee/stock-time-series-20050101-to-20171231
+
+
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col, lag, avg, stddev, when
 from snowflake.snowpark.types import FloatType, StructType, StructField, TimestampType

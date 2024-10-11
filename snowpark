@@ -1,0 +1,81 @@
+https://www.kaggle.com/datasets/new-york-city/nyc-taxi-trip-duration
+
+from snowflake.snowpark.session import Session
+from snowflake.snowpark.functions import col, to_timestamp, hour, dayofweek, month, year
+from snowflake.snowpark.types import StructType, StructField, StringType, FloatType, TimestampType
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import joblib
+
+# Set up Snowflake connection
+connection_parameters = {
+    "account": "<account_name>",
+    "user": "<username>",
+    "password": "<password>",
+    "role": "<role>",
+    "warehouse": "<warehouse>",
+    "database": "<database>",
+    "schema": "<schema>"
+}
+session = Session.builder.configs(connection_parameters).create()
+
+# Load the time series dataset (replace with your dataset)
+file_path = 'nyc_taxi_trip_duration.csv'  # Path to the downloaded dataset
+df = pd.read_csv(file_path)
+
+# Convert the Pandas dataframe to Snowpark DataFrame
+snowpark_df = session.create_dataframe(df)
+
+# Feature Engineering - Creating time-based features from timestamps
+snowpark_df = snowpark_df.with_column("pickup_time", to_timestamp(col("pickup_datetime"))) \
+                         .with_column("hour_of_day", hour(col("pickup_time"))) \
+                         .with_column("day_of_week", dayofweek(col("pickup_time"))) \
+                         .with_column("month", month(col("pickup_time"))) \
+                         .with_column("year", year(col("pickup_time")))
+
+# Standardizing features (scaling)
+feature_cols = ["hour_of_day", "day_of_week", "month", "year", "trip_duration"]
+features_df = snowpark_df.select(*feature_cols)
+
+# Convert Snowpark DataFrame back to Pandas for further preprocessing (e.g., scaling)
+features_pandas_df = features_df.to_pandas()
+
+# Standardize features
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features_pandas_df)
+
+# Train an Isolation Forest model for anomaly detection
+model = IsolationForest(contamination=0.05, random_state=42)
+model.fit(scaled_features)
+
+# Store features and model in Snowflake
+features_df.write.save_as_table("FEATURE_STORE.NYC_TAXI_FEATURES", mode="overwrite")
+
+# Save the model to a file
+model_filename = "/tmp/anomaly_detection_model.pkl"
+joblib.dump(model, model_filename)
+
+# Upload the model to Snowflake's Model Registry
+session.file.put(model_filename, "@model_stage/anomaly_detection_model.pkl")
+
+# Create a stored procedure for model inference in Snowflake
+def detect_anomalies(session: Session, input_data: pd.DataFrame) -> pd.DataFrame:
+    # Load model from Snowflake stage
+    model_path = "@model_stage/anomaly_detection_model.pkl"
+    model = joblib.load(session.file.get_stream(model_path))
+    
+    # Scale input features using the same scaler
+    scaled_input = scaler.transform(input_data)
+    
+    # Predict anomalies
+    predictions = model.predict(scaled_input)
+    
+    # Add predictions to the DataFrame
+    input_data['anomaly'] = predictions
+    return input_data
+
+# Register the stored procedure
+session.sproc.register(detect_anomalies, "DETECT_ANOMALIES", return_type="variant", input_types=[StructType([StructField("pickup_datetime", TimestampType()), StructField("trip_duration", FloatType())])])
+
+print("Feature store and model registry setup complete!")

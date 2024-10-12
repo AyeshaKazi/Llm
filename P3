@@ -44,6 +44,16 @@ df_with_features = df_with_features.with_column(
     (col("close") - col("rolling_avg")) / col("rolling_stddev")
 )
 
+
+# Step 4: Manually save the features into a Snowflake table (this replaces the feature store operation)
+df_with_features.write.save_as_table("FINANCIAL_FEATURES", mode="overwrite")
+
+# Step 5: Fetch stored features (to check storage)
+stored_features = session.table("FINANCIAL_FEATURES")
+stored_features.show()
+
+
+
 # Step 4: Store Features in Feature Store (per stock)
 feature_store = FeatureStore(session=session)
 feature_store.create_or_replace("financial_features", df_with_features, primary_key=["ticker", "date"])

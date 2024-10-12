@@ -1,0 +1,79 @@
+from snowflake.snowpark import Session
+from snowflake.snowpark.functions import col, lag, avg, stddev, when
+from snowflake.snowpark.types import FloatType, StructType, StructField, TimestampType
+from snowflake.ml.modeling import AnomalyDetector
+from snowflake.ml.feature_store import FeatureStore
+
+# Establish Snowflake session
+connection_params = {
+    "account": "<your_account>",
+    "user": "<your_user>",
+    "password": "<your_password>",
+    "role": "<your_role>",
+    "warehouse": "<your_warehouse>",
+    "database": "<your_database>",
+    "schema": "<your_schema>"
+}
+session = Session.builder.configs(connection_params).create()
+
+# Load data into Snowflake table
+df = session.table("STOCK_PRICES")
+
+# Step 1: Perform rolling average and lag calculations per stock (group by ticker)
+window_size = 5
+
+# Create individual lag columns for calculating the rolling average and standard deviation manually
+for i in range(1, window_size + 1):
+    df = df.with_column(f"lag_close_{i}", lag(col("close"), i).over(partition_by="ticker", order_by="date"))
+
+# Sum the lag values for rolling average
+df_with_features = df.with_column("rolling_avg", 
+    (col("close") + col("lag_close_1") + col("lag_close_2") + col("lag_close_3") + col("lag_close_4") + col("lag_close_5")) / window_size
+)
+
+# Calculate the standard deviation manually
+df_with_features = df_with_features.with_column("rolling_stddev", stddev([
+    col("close"), col("lag_close_1"), col("lag_close_2"), col("lag_close_3"), col("lag_close_4"), col("lag_close_5")
+]))
+
+# Step 2: Feature Engineering - Z-score for anomaly detection (per stock)
+df_with_features = df_with_features.with_column(
+    "z_score", 
+    (col("close") - col("rolling_avg")) / col("rolling_stddev")
+)
+
+# Step 3: Store Features in Feature Store (per stock)
+feature_store = FeatureStore(session=session)
+feature_store.create_or_replace("financial_features", df_with_features, primary_key=["ticker", "date"])
+
+# Fetch stored features (to check storage)
+stored_features = feature_store.get_features("financial_features")
+stored_features.show()
+
+# Step 4: Train an anomaly detection model
+anomaly_model = AnomalyDetector(contamination=0.01)
+features_df = stored_features.select("ticker", "z_score")
+
+# Fit the model
+model = anomaly_model.fit(features_df)
+
+# Register the model in the Snowflake Model Registry
+from snowflake.ml.model import ModelRegistry
+
+model_registry = ModelRegistry(session=session)
+model_registry.register("anomaly_detection_model", model, input_cols=["z_score"], output_cols=["anomaly_score"])
+
+# Verify registration
+model_registry.list_models().show()
+
+# Step 5: Use the Feature Store and Model Registry for Predictions
+fetched_model = model_registry.load("anomaly_detection_model")
+
+# Use the feature store and model for predictions
+pred_df = feature_store.get_features("financial_features").select("ticker", "z_score")
+predictions = fetched_model.transform(pred_df)
+predictions.show()
+
+# Mark anomalies
+final_output = predictions.with_column("is_anomaly", when(col("anomaly_score") > 0.9, 1).otherwise(0))
+final_output.show()

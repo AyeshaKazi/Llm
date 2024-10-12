@@ -34,10 +34,9 @@ df_with_features = df.with_column("rolling_avg",
     (col("close") + col("lag_close_1") + col("lag_close_2") + col("lag_close_3") + col("lag_close_4") + col("lag_close_5")) / window_size
 )
 
-# Calculate the standard deviation manually
-df_with_features = df_with_features.with_column("rolling_stddev", stddev([
-    col("close"), col("lag_close_1"), col("lag_close_2"), col("lag_close_3"), col("lag_close_4"), col("lag_close_5")
-]))
+# Calculate the standard deviation of 'close' over the defined window
+df_with_features = df_with_features.with_column("rolling_stddev", stddev(col("close")).over(window_spec))
+
 
 # Step 3: Feature Engineering - Z-score for anomaly detection (per stock)
 df_with_features = df_with_features.with_column(

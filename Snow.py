@@ -1,89 +1,46 @@
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
 from graphviz import Digraph
 
-# Initialize the DataFrame with SQL queries (as before)
-df = pd.DataFrame({
-    'query': [
-        "UPDATE Query 1", "UPDATE Query 2", "UPDATE Query 3", "UPDATE Query 4", 
-        "UPDATE Query 5", "UPDATE Query 6", "UPDATE Query 7", "UPDATE Query 8",
-        "UPDATE Query 9", "UPDATE Query 10", "UPDATE Query 11"
-    ],
-    'table': [
-        "table1", "table1", "table2", "table1", 
-        "table3", "table2", "table3", "table4",
-        "table1", "table2", "table3"
-    ],
-    'columns': [
-        ["col1", "col2"], ["col1", "col2"], ["col3"], ["col1"], 
-        ["col4"], ["col3"], ["col4"], ["col5"],
-        ["col2"], ["col3"], ["col4"]
-    ],
-    'where_clause': [
-        "condition1", "condition1", "condition2", "condition3", 
-        "condition4", "condition2", "condition4", "condition5",
-        "condition6", "condition2", "condition4"
-    ],
-    'join_conditions': [
-        None, None, None, None, 
-        None, None, None, "join1",
-        None, None, None
-    ]
-})
-
-# Initialize Graphviz tree for the order of execution
+# Initialize a directed graph for the execution tree (top-down layout)
 tree = Digraph(format='png')
+tree.attr(rankdir='TB')  # Force top-to-bottom layout
 
-# Add nodes for each query in the tree
-for i, row in df.iterrows():
-    tree.node(f"Q{i+1}", f"{row['query']}")
+# Example SQL queries from the dataframe
+queries = [
+    "Query 1", "Query 2", "Query 3", "Query 4", 
+    "Query 5", "Query 6", "Query 7", "Query 8", 
+    "Query 9", "Query 10", "Query 11"
+]
 
-# Connect queries to show the execution order in a tree structure
-for i in range(len(df) - 1):
-    tree.edge(f"Q{i+1}", f"Q{i+2}")  # Sequential order of execution
+# Add nodes for each query in the tree, assigning the order of execution explicitly
+for i, query in enumerate(queries):
+    tree.node(f"Q{i+1}", f"{query}")
 
-# Initialize NetworkX for subgraph construction (for mergeable queries)
-G = nx.DiGraph()
+# Connect nodes sequentially to show the flow of execution
+for i in range(len(queries) - 1):
+    tree.edge(f"Q{i+1}", f"Q{i+2}")  # Sequential execution
 
-# Add nodes for each query in the NetworkX graph
-for i, row in df.iterrows():
-    G.add_node(row['query'], table=row['table'], columns=row['columns'], where=row['where_clause'], joins=row['join_conditions'])
+# Define which queries are mergeable and create subgraphs for them
+merged_queries = {
+    'Merge 1': ['Query 2', 'Query 5'],  # Example of mergeable queries
+    'Merge 2': ['Query 7', 'Query 10']
+}
 
-# Identify mergeable queries
-mergeable_queries = []
-for i, row1 in df.iterrows():
-    for j, row2 in df.iterrows():
-        if i != j:
-            if row1['table'] == row2['table'] and row1['columns'] == row2['columns'] \
-                    and row1['where_clause'] == row2['where_clause'] and row1['join_conditions'] == row2['join_conditions']:
-                mergeable_queries.append((row1['query'], row2['query']))
+# Adding subgraph for each group of mergeable queries
+for merge_group, merge_queries in merged_queries.items():
+    with tree.subgraph(name=f'cluster_{merge_group}') as subgraph:
+        subgraph.attr(style='dotted', label=merge_group)
+        # Add each query as a node in the subgraph
+        for merge_query in merge_queries:
+            query_idx = queries.index(merge_query) + 1
+            subgraph.node(f"Q{query_idx}", merge_query)
+            # Connect first merged query to the main tree
+            if merge_query == merge_queries[0]:
+                tree.edge(f"Q{query_idx-1}", f"Q{query_idx}")  # Connect the previous query to the merge node
+            # Connect last merged query to the next query in the tree
+            if merge_query == merge_queries[-1]:
+                next_query_idx = queries.index(merge_queries[-1]) + 2
+                if next_query_idx <= len(queries):
+                    tree.edge(f"Q{query_idx}", f"Q{next_query_idx}")
 
-# Remove merged queries from the main tree and construct subgraphs for them
-for q1, q2 in mergeable_queries:
-    idx1 = df.index[df['query'] == q1][0] + 1
-    idx2 = df.index[df['query'] == q2][0] + 1
-    
-    # Create a merged node in the tree for the group of mergeable queries
-    merge_node = f"Merge({q1},{q2})"
-    tree.node(merge_node, f"Merged: {q1} + {q2}")
-    
-    # Connect the merged node to the sequential execution order in the tree
-    if idx1 > 1:
-        tree.edge(f"Q{idx1-1}", merge_node)  # Link previous query to the merged node
-    if idx2 < len(df):
-        tree.edge(merge_node, f"Q{idx2+1}")  # Link merged node to the next query in the tree
-
-    # Add cyclic subgraph for mergeable queries using NetworkX
-    G.add_edge(q1, q2)  # Cyclic edge between mergeable queries
-    G.add_edge(q2, q1)
-
-# Render and show the tree structure with merged nodes
-tree.render('tree_with_merged_graph', view=True)
-
-# Draw the subgraph for merged queries
-plt.figure(figsize=(8, 6))
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True, node_color='lightblue', font_size=10, font_weight='bold', node_size=3000)
-plt.title('Subgraph for Mergeable Queries')
-plt.show()
+# Render and display the tree with subgraphs
+tree.render('tree_with_merged_queries', view=True)

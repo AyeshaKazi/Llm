@@ -58,11 +58,18 @@ for i, row1 in df.iterrows():
 # Print out mergeable queries
 print("Mergeable Queries:", mergeable_queries)
 
+# Step 1: Add sequential edges for execution order
+for i in range(len(df) - 1):
+    G.add_edge(df.loc[i, 'query'], df.loc[i + 1, 'query'])  # Sequential order of execution
+
+# Step 2: For mergeable queries, add cyclic edges
+for q1, q2 in mergeable_queries:
+    G.add_edge(q1, q2)  # Cyclic edge between mergeable queries
+    G.add_edge(q2, q1)  # Add the reverse edge to indicate merging
+
 # Draw the graph
 plt.figure(figsize=(12, 8))
 pos = nx.spring_layout(G, k=0.5)
-nx.draw(G, pos, with_labels=True, node_color='lightgreen', font_weight='bold', node_size=3500, font_size=10, edge_color='gray')
-plt.title('SQL Dependency Graph with Mergeable Queries')
+nx.draw(G, pos, with_labels=True, node_color='lightblue', font_weight='bold', node_size=3500, font_size=10, edge_color='gray', arrows=True)
+plt.title('SQL Dependency Graph with Mergeable Queries and Execution Order')
 plt.show()
-
-

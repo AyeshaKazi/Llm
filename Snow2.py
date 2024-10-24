@@ -11,30 +11,42 @@ queries = [
     "Query 9", "Query 10", "Query 11"
 ]
 
-# Add nodes for each query in the tree, assigning the order of execution explicitly
-for i, query in enumerate(queries):
-    tree.node(f"Q{i+1}", f"{query}")
-
-# Define which queries are mergeable and create subgraphs for them
+# Define which queries are mergeable (this can be dynamic in the future)
 merged_queries = {
     'Merge 1': ['Query 2', 'Query 5'],  # Example of mergeable queries
     'Merge 2': ['Query 7', 'Query 10']
 }
 
-# Connect nodes in the main tree, skipping over merged queries
-for i in range(len(queries) - 1):
-    # If the current query is part of a merged group, skip it
-    if any(queries[i] in group for group in merged_queries.values()):
-        continue
-    # If the next query is part of a merged group, connect to the merged node instead of the individual query
-    if any(queries[i+1] in group for group in merged_queries.values()):
-        # Find the merged group for the next query
-        for merge_group, merge_group_queries in merged_queries.items():
-            if queries[i+1] in merge_group_queries:
-                tree.edge(f"Q{i+1}", merge_group)
-                break
+# Flatten merged queries to know which queries are part of a merge
+flattened_merged = [query for merge_group in merged_queries.values() for query in merge_group]
+
+# Add nodes for each query in the tree, assigning the order of execution explicitly
+for i, query in enumerate(queries):
+    tree.node(f"Q{i+1}", f"{query}")
+
+# Dynamically add edges between queries, skipping over merged nodes
+i = 0
+while i < len(queries) - 1:
+    current_query = queries[i]
+    next_query = queries[i + 1]
+    
+    # If current query is part of a merge, skip over the entire merged group
+    if current_query in flattened_merged:
+        # Find the last query in the current merged group and connect it to the next unmerged query
+        merge_group_name = [k for k, v in merged_queries.items() if current_query in v][0]
+        last_query_in_merge = merged_queries[merge_group_name][-1]
+        last_query_idx = queries.index(last_query_in_merge) + 1
+        
+        # Check if the last query in the merge is the last in the list
+        if last_query_idx < len(queries):
+            tree.edge(f"Q{last_query_idx}", f"Q{last_query_idx + 1}")
+        
+        # Move index past the merged group
+        i = last_query_idx
     else:
+        # Regular edge addition if not part of a merge
         tree.edge(f"Q{i+1}", f"Q{i+2}")
+        i += 1
 
 # Adding subgraph for each group of mergeable queries
 for merge_group, merge_queries in merged_queries.items():
@@ -44,15 +56,16 @@ for merge_group, merge_queries in merged_queries.items():
         for merge_query in merge_queries:
             query_idx = queries.index(merge_query) + 1
             subgraph.node(f"Q{query_idx}", merge_query)
-        # Connect the first and last query in the merge group to the main tree
+        
+        # Connect first merged query to the previous node in the main tree
         first_query_idx = queries.index(merge_queries[0]) + 1
-        last_query_idx = queries.index(merge_queries[-1]) + 1
-        # Connect the first merged query to the previous node in the tree
         if first_query_idx > 1:
             tree.edge(f"Q{first_query_idx-1}", f"Q{first_query_idx}")
-        # Connect the last merged query to the next node in the tree
+        
+        # Connect last merged query to the next unmerged query in the main tree
+        last_query_idx = queries.index(merge_queries[-1]) + 1
         if last_query_idx < len(queries):
-            tree.edge(f"Q{last_query_idx}", f"Q{last_query_idx+1}")
+            tree.edge(f"Q{last_query_idx}", f"Q{last_query_idx + 1}")
 
 # Render and display the tree with subgraphs
-tree.render('tree_with_merged_queries_updated_all', view=True)
+tree.render('tree_with_dynamic_edges', view=True)

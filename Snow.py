@@ -2,14 +2,33 @@ import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Assuming your data frame looks like this
-# columns: ['query', 'table', 'columns', 'where_clause', 'join_conditions']
+# Extended DataFrame with 10+ SQL queries
 df = pd.DataFrame({
-    'query': ["UPDATE Query 1", "UPDATE Query 2", "UPDATE Query 3"],
-    'table': ["table1", "table2", "table1"],
-    'columns': [["col1", "col2"], ["col3"], ["col1"]],
-    'where_clause': ["condition1", "condition2", "condition3"],
-    'join_conditions': [None, None, None]
+    'query': [
+        "UPDATE Query 1", "UPDATE Query 2", "UPDATE Query 3", "UPDATE Query 4", 
+        "UPDATE Query 5", "UPDATE Query 6", "UPDATE Query 7", "UPDATE Query 8",
+        "UPDATE Query 9", "UPDATE Query 10", "UPDATE Query 11"
+    ],
+    'table': [
+        "table1", "table1", "table2", "table1", 
+        "table3", "table2", "table3", "table4",
+        "table1", "table2", "table3"
+    ],
+    'columns': [
+        ["col1", "col2"], ["col1", "col2"], ["col3"], ["col1"], 
+        ["col4"], ["col3"], ["col4"], ["col5"],
+        ["col2"], ["col3"], ["col4"]
+    ],
+    'where_clause': [
+        "condition1", "condition1", "condition2", "condition3", 
+        "condition4", "condition2", "condition4", "condition5",
+        "condition6", "condition2", "condition4"
+    ],
+    'join_conditions': [
+        None, None, None, None, 
+        None, None, None, "join1",
+        None, None, None
+    ]
 })
 
 # Initialize an empty directed graph
@@ -40,8 +59,10 @@ for i, row1 in df.iterrows():
 print("Mergeable Queries:", mergeable_queries)
 
 # Draw the graph
-plt.figure(figsize=(10, 8))
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True, node_color='lightblue', font_weight='bold', node_size=3000, font_size=10)
-plt.title('SQL Dependency Graph')
+plt.figure(figsize=(12, 8))
+pos = nx.spring_layout(G, k=0.5)
+nx.draw(G, pos, with_labels=True, node_color='lightgreen', font_weight='bold', node_size=3500, font_size=10, edge_color='gray')
+plt.title('SQL Dependency Graph with Mergeable Queries')
 plt.show()
+
+

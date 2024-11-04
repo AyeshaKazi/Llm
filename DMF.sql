@@ -1,3 +1,18 @@
+CREATE OR REPLACE DATA METRIC FUNCTION calculate_z_score_metric(input_table TABLE (close_value FLOAT, lag_5_days FLOAT, std_dev FLOAT))
+RETURNS TABLE (z_score FLOAT)
+LANGUAGE SQL
+AS
+$$
+SELECT
+    CASE
+        WHEN std_dev = 0 OR std_dev IS NULL OR lag_5_days IS NULL THEN NULL
+        ELSE (close_value - lag_5_days) / std_dev
+    END AS z_score
+FROM input_table;
+$$;
+
+
+
 metric_function_sql = """
 CREATE OR REPLACE DATA METRIC FUNCTION custom_lag_zscore_metric(close_value FLOAT)
 RETURNS TABLE (

@@ -40,3 +40,32 @@ $$;
 
 # Execute the SQL to create the data metric function
 session.sql(metric_function_sql).collect()
+
+
+# Call the metric function and turn it into a Snowpark DataFrame
+metric_df = session.table_function("custom_lag_zscore_metric").alias("metrics")
+
+# Define the feature view by joining the metric results with the original data (optional)
+original_df = session.table("your_table_name").alias("original")
+feature_view_df = metric_df.join(original_df, metric_df["date"] == original_df["date"]).select(
+    metric_df["date"],
+    metric_df["close_value"],
+    metric_df["lag_5_days"],
+    metric_df["std_dev"],
+    metric_df["z_score"]
+)
+
+# Save the feature view as a Snowflake table or temporary view, if needed
+feature_view_df.write.mode("overwrite").save_as_table("custom_lag_zscore_feature_view")
+
+
+task_sql = """
+CREATE OR REPLACE TASK refresh_custom_lag_zscore_feature_view
+WAREHOUSE = '<your_warehouse>'
+SCHEDULE = 'USING CRON 0 0 * * *'
+AS
+REFRESH FEATURE VIEW custom_lag_zscore_feature_view;
+"""
+
+# Execute the SQL to create the task
+session.sql(task_sql).collect()

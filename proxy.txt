@@ -1,0 +1,99 @@
+h1. Snowflake Connectivity Changes – Eliminating the Use of Proxy
+
+h2. 1. Overview
+
+This document describes upcoming changes to the way we connect to Snowflake, specifically removing the need for an HTTP proxy when query results exceed certain data thresholds. Currently, when large datasets are returned, Snowflake retrieves that data from AWS S3. Due to existing network/security settings, an HTTP proxy must be used. We will transition to using an AWS S3 DNS VPC Endpoint to remove the need for a proxy entirely.
+
+Current Behavior: Uses an HTTP proxy to connect to S3 for large dataset retrieval.
+Proposed Change: Leverage an AWS S3 DNS VPC Endpoint within Snowflake, removing the proxy configuration.
+Impact: Code and configuration changes will be required by user teams to remove proxy references.
+Implementation Timeline: All environments (Development, UAT, and Production) must be updated by January 20, 2025.
+h2. 2. Current Setup
+
+Snowflake Connectivity Flow
+** When queries exceed a certain size, Snowflake streams the result set from an AWS S3 bucket.
+** Because of the VPC and internet gateway restrictions, an HTTP proxy is currently required to handle these calls.
+
+AWS Networking Components
+** AWS Direct Connect or AWS PrivateLink may be in place for secure connectivity between on-premises (or your VPC) and Snowflake.
+** S3 Policy VPC ID is used to restrict S3 bucket access to a specific VPC.
+
+Challenges
+** Managing proxy configurations and credentials in application code, ETL scripts, and BI tools.
+** Potential bottlenecks for large-scale data ingestion or egress through the proxy.
+** Complexity in debugging and diagnosing performance issues involving a proxy.
+
+h2. 3. Proposed Setup
+
+Transition to AWS S3 DNS VPC Endpoint
+** Move away from the S3 Policy VPC ID approach and define an AWS S3 DNS VPC Endpoint (Interface Endpoint).
+** This allows direct connectivity from Snowflake to your S3 bucket without routing through an external proxy.
+
+Snowflake User-Level Configuration
+** For each Snowflake user or service account requiring proxy-less connectivity, the Nucleus team will run:
+{code:sql} ALTER USER <username> SET S3_STAGE_VPCE_DNS_NAME = '<VPC_ENDPOINT>.amazonaws.com'; {code}
+** Benefit: Snowflake will connect to this specific VPC endpoint for any S3-based data retrieval, bypassing the HTTP proxy.
+
+Account-Level Implementation
+** After all teams have validated and transitioned to the new configuration, the setting will be applied at the Snowflake Account Level.
+** Once complete, all users will inherit the same S3 DNS VPC Endpoint by default, fully eliminating proxy usage for S3 data access.
+
+Advantages
+** Improved Performance: Direct S3 connections can reduce latency and remove the proxy bottleneck.
+** Simplified Administration: Less overhead in maintaining and troubleshooting proxy settings.
+** Enhanced Security: Traffic restricted to the VPC endpoint via AWS PrivateLink, reducing external exposure.
+
+h2. 4. Scope of Changes
+
+Nucleus Team Responsibilities
+** Create/Amend Snowflake Users: Update each user’s S3 staging configuration ({{S3_STAGE_VPCE_DNS_NAME}}).
+** Provide Technical Guidance: Share documentation and best practices on removing proxy references in code and tools.
+** Account-Level Rollout: Once all user teams have transitioned, apply S3 DNS endpoint settings globally at the Snowflake account level.
+
+User Teams’ Responsibilities
+** Code Updates: Remove or disable proxy configurations in scripts, ETL jobs, and custom applications.
+** BI Tools/Reporting Changes: Adjust Power BI, Tableau, etc., so connections do not require a proxy.
+** Environment-by-Environment Migration:
+*** Dev → UAT → Prod: Validate connectivity and data retrieval at each stage.
+** Optional Service Account Migration:
+*** Request new Snowflake service accounts already configured with the DNS endpoint.
+*** Migrate processes in batches, then decommission old service accounts after all workflows have moved.
+
+h2. 5. Implementation Phases
+
+Phase 1: User-Level Rollout
+** Start Date: Immediately
+** Nucleus Team configures {{S3_STAGE_VPCE_DNS_NAME}} for individual user accounts or newly created service accounts.
+** Users remove proxy settings, confirming connectivity to Snowflake and S3 for large query results.
+
+Phase 2: Validation and Iterative Updates
+** Ongoing until all user teams complete Dev, UAT, and Prod migrations.
+** Nucleus Team provides support, monitors progress, and ensures minimal disruption.
+** Roll out changes per environment (Dev → UAT → Prod) or in batches via new service accounts.
+
+Phase 3: Account-Level Change
+** Target Date: Post–January 20, 2025, or once all teams have successfully transitioned.
+** Nucleus Team applies the DNS endpoint configuration at the Snowflake account level, making it the default.
+** At this point, the HTTP proxy is fully deprecated for S3-based data retrieval.
+
+h2. 6. Timeline and Key Milestones
+
+|| Milestone || Date || Owner || Notes || | User-Level Changes Begin | Immediately | Nucleus + Users | Nucleus modifies user settings; users remove proxy references. | | Dev Environment Completed | Team-Specific | Users | Code changes validated in Development. | | UAT Environment Completed | Team-Specific | Users | Testing and validation in UAT. | | Production Rollout Completed | Team-Specific | Users | Final production switchover. | | All Teams Completed | Jan 20, 2025 | Users | Deadline for completing migration across all environments. | | Account-Level Snowflake Configuration | Post Jan 20, 2025 | Nucleus | Once all users have confirmed updates. |
+
+h2. 7. Next Steps & Action Items
+
+User Teams
+** Identify all code, ETL pipelines, and BI tools that use a proxy to connect to Snowflake.
+** Plan an environment-by-environment (or phased) migration to remove proxy settings.
+** Contact the Nucleus team to request any new service accounts or to update existing user settings.
+
+Nucleus Team
+** Execute the {code}ALTER USER … SET S3_STAGE_VPCE_DNS_NAME{code} statements to enable DNS-based S3 connectivity.
+** Provide ongoing support for Dev, UAT, and Production rollouts.
+** Perform the final account-level update once all users have migrated.
+
+h2. Contact Information
+
+Nucleus Team Contact: [Provide email address / Slack channel / Teams group]
+Snowflake Support: [Link to internal knowledge base or vendor documentation]
+AWS S3 & VPC Endpoint Reference: [Link to AWS docs on creating Interface Endpoints]

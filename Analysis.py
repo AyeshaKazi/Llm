@@ -1,75 +1,40 @@
-# Modified generate_query_summary method in data_processor.py
+# Modified display_query_summary method in ui_components.py
 @staticmethod
-def generate_query_summary(df):
-    if df.empty:
-        return {}
+def display_query_summary(summary):
+    if not summary:
+        st.warning("No data available for analysis")
+        return
 
-    # Convert duration to seconds
-    df['DURATION_SECONDS'] = df['TOTAL_ELAPSED_TIME'] / 1000
+    # Basic Statistics
+    st.write("### Query Statistics")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total Queries", summary['total_queries'])
+    with col2:
+        st.metric("Avg Duration (sec)", f"{summary['avg_duration']:.2f}")
+    with col3:
+        st.metric("95th Percentile (sec)", f"{summary['performance_metrics']['p95_duration']:.2f}")
+    with col4:
+        st.metric("Max Duration (sec)", f"{summary['performance_metrics']['max_duration']:.2f}")
 
-    # Extract rows_updated from query plan
-    df['ROWS_UPDATED'] = df['PLAN_SUMMARY'].apply(
-        lambda x: x.get('estimated_rows', 0) if x else 0
-    )
+    # Query Type Distribution
+    st.write("### Query Type Distribution")
+    st.plotly_chart(summary['visualizations']['query_type_pie'], use_container_width=True)
 
-    # Group queries by rows_updated
-    rows_updated_groups = df.groupby('ROWS_UPDATED').agg({
-        'QUERY_ID': list,
-        'QUERY_TEXT': list,
-        'DURATION_SECONDS': 'mean'
-    }).reset_index()
+    # Duration Distribution
+    st.write("### Query Duration Distribution")
+    st.plotly_chart(summary['visualizations']['duration_histogram'], use_container_width=True)
 
-    # Filter for groups with multiple queries
-    similar_queries = rows_updated_groups[rows_updated_groups['QUERY_ID'].str.len() > 1]
+    # Similar Queries Analysis
+    st.write("### Similar Queries Analysis")
+    st.plotly_chart(summary['visualizations']['similar_queries_scatter'], use_container_width=True)
 
-    summary = {
-        'total_queries': len(df),
-        'avg_duration': df['DURATION_SECONDS'].mean(),
-        'query_type_distribution': df['QUERY_TYPE'].value_counts(),
-        'performance_metrics': {
-            'min_duration': df['DURATION_SECONDS'].min(),
-            'max_duration': df['DURATION_SECONDS'].max(),
-            'median_duration': df['DURATION_SECONDS'].median(),
-            'p95_duration': df['DURATION_SECONDS'].quantile(0.95),
-        }
-    }
-
-    # Generate visualizations
-    summary['visualizations'] = {
-        'query_type_pie': px.pie(
-            values=summary['query_type_distribution'].values,
-            names=summary['query_type_distribution'].index,
-            title='Query Type Distribution'
-        ),
-
-        'duration_histogram': px.histogram(
-            df,
-            x='DURATION_SECONDS',
-            title='Query Duration Distribution (seconds)',
-            labels={'DURATION_SECONDS': 'Duration (seconds)'},
-            nbins=30,
-            range_x=[0, df['DURATION_SECONDS'].max()]  # Start from 0
-        ),
-
-        'similar_queries_scatter': px.scatter(
-            similar_queries,
-            x='ROWS_UPDATED',
-            y='DURATION_SECONDS',
-            size=[len(x) for x in similar_queries['QUERY_ID']],  # Bubble size based on number of similar queries
-            hover_data={
-                'ROWS_UPDATED': True,
-                'DURATION_SECONDS': ':.2f',
-                'QUERY_TEXT': True
-            },
-            title='Similar Queries by Rows Updated',
-            labels={
-                'ROWS_UPDATED': 'Number of Rows Updated',
-                'DURATION_SECONDS': 'Average Duration (seconds)'
-            }
-        )
-    }
-
-    # Store similar queries data for detailed view
-    summary['similar_queries'] = similar_queries
-
-    return summary
+    # Detailed Similar Queries Table
+    if not summary['similar_queries'].empty:
+        st.write("### Detailed Similar Queries")
+        for _, row in summary['similar_queries'].iterrows():
+            with st.expander(f"Queries updating {row['ROWS_UPDATED']} rows"):
+                for query in row['QUERY_TEXT']:
+                    st.code(query, language="sql")
+                st.write(f"Average Duration: {row['DURATION_SECONDS']:.2f} seconds")
+            

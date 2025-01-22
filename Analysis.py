@@ -1,40 +1,41 @@
-# Modified display_query_summary method in ui_components.py
 @staticmethod
-def display_query_summary(summary):
-    if not summary:
-        st.warning("No data available for analysis")
-        return
-
-    # Basic Statistics
-    st.write("### Query Statistics")
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Total Queries", summary['total_queries'])
-    with col2:
-        st.metric("Avg Duration (sec)", f"{summary['avg_duration']:.2f}")
-    with col3:
-        st.metric("95th Percentile (sec)", f"{summary['performance_metrics']['p95_duration']:.2f}")
-    with col4:
-        st.metric("Max Duration (sec)", f"{summary['performance_metrics']['max_duration']:.2f}")
-
-    # Query Type Distribution
-    st.write("### Query Type Distribution")
-    st.plotly_chart(summary['visualizations']['query_type_pie'], use_container_width=True)
-
-    # Duration Distribution
-    st.write("### Query Duration Distribution")
-    st.plotly_chart(summary['visualizations']['duration_histogram'], use_container_width=True)
-
-    # Similar Queries Analysis
-    st.write("### Similar Queries Analysis")
-    st.plotly_chart(summary['visualizations']['similar_queries_scatter'], use_container_width=True)
-
-    # Detailed Similar Queries Table
-    if not summary['similar_queries'].empty:
-        st.write("### Detailed Similar Queries")
-        for _, row in summary['similar_queries'].iterrows():
-            with st.expander(f"Queries updating {row['ROWS_UPDATED']} rows"):
-                for query in row['QUERY_TEXT']:
-                    st.code(query, language="sql")
-                st.write(f"Average Duration: {row['DURATION_SECONDS']:.2f} seconds")
-            
+def _create_rows_produced_heatmap(df):
+    # Extract ROWS_PRODUCED from query plan
+    df['ROWS_PRODUCED'] = df['PLAN_SUMMARY'].apply(
+        lambda x: x.get('estimated_rows', 0) if x else 0
+    )
+    
+    # Group queries by ROWS_PRODUCED
+    query_groups = df.groupby('ROWS_PRODUCED')['QUERY_ID'].agg(list).reset_index()
+    
+    # Create matrix for heatmap
+    matrix_data = []
+    y_labels = []  # For ROWS_PRODUCED values
+    query_ids = []  # For storing query IDs
+    
+    for _, row in query_groups.iterrows():
+        y_labels.append(str(row['ROWS_PRODUCED']))
+        queries = row['QUERY_ID']
+        matrix_data.append([len(queries)])  # Count of queries
+        query_ids.append(queries)
+    
+    # Create heatmap figure
+    fig = go.Figure(data=go.Heatmap(
+        z=matrix_data,
+        x=['Query Count'],
+        y=y_labels,
+        colorscale='Viridis',
+        text=[[str(val[0])] for val in matrix_data],  # Show count in cells
+        texttemplate="%{text}",
+        textfont={"size": 12},
+        showscale=True,
+    ))
+    
+    fig.update_layout(
+        title='Query Distribution by Rows Produced',
+        yaxis_title='Rows Produced',
+        height=max(350, len(y_labels) * 30),  # Dynamic height based on number of rows
+        margin=dict(t=50, l=120)  # Adjust margins for better visibility
+    )
+    
+    return fig, query_ids, y_labels

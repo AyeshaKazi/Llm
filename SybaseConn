@@ -1,0 +1,22 @@
+{
+    "sybase_connection_string": "DSN=SybaseDB;UID=user;PWD=password",
+    "s3_bucket": "your-migration-bucket",
+    "snowflake_connection": {
+        "account": "your_account",
+        "user": "migration_user",
+        "password": "password",
+        "warehouse": "MIGRATION_WH",
+        "database": "TARGET_DB",
+        "schema": "PUBLIC"
+    },
+    "snowflake_stage": "YOUR_INTERNAL_STAGE",
+    "snowflake_target_table": "your_target_table",
+    "tables": {
+        "large_table1": {
+            "partition_column": "transaction_date"
+        },
+        "large_table2": {
+            "partition_column": "customer_id"
+        }
+    }
+}

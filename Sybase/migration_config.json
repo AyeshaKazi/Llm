@@ -1,20 +1,22 @@
 {
-    "sybase_host": "your_sybase_host",
-    "sybase_port": "port_number",
-    "sybase_username": "your_username",
-    "sybase_password": "your_password",
-    "sybase_database": "your_database",
+    "source_db_type": "postgresql",
+    "source_host": "your_source_host",
+    "source_port": "5432",
+    "source_database": "source_database",
+    "source_username": "username",
+    "source_password": "password",
+    
     "s3_bucket": "your-migration-bucket",
-    "snowflake_connection": {
-        "account": "your_account",
-        "user": "migration_user",
-        "password": "password",
-        "warehouse": "MIGRATION_WH",
-        "database": "TARGET_DB",
-        "schema": "PUBLIC"
-    },
-    "snowflake_stage": "YOUR_INTERNAL_STAGE",
-    "snowflake_target_table": "your_target_table",
+    
+    "snowflake_account": "your_account.snowflakecomputing.com",
+    "snowflake_username": "snowflake_user",
+    "snowflake_password": "password",
+    "snowflake_database": "target_database",
+    "snowflake_schema": "public",
+    "snowflake_warehouse": "migration_warehouse",
+    
+    "num_partitions": 20,
+    
     "tables": {
         "large_table1": {
             "partition_column": "transaction_date"

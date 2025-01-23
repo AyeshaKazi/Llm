@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import multiprocessing
-import pyodbc
+from sqlalchemy import create_engine, text
 import boto3
 import snowflake.connector
 import pandas as pd
@@ -15,6 +15,13 @@ class DataMigrationTracker:
         self.s3_client = boto3.client('s3')
         self.migration_id = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.migration_status_file = f'migration_status_{self.migration_id}.json'
+        
+        # Create SQLAlchemy engine
+        self.sybase_engine = create_engine(
+            f"sybase+pymssql://{self.config['sybase_username']}:{self.config['sybase_password']}@{self.config['sybase_host']}:{self.config['sybase_port']}/{self.config['sybase_database']}",
+            pool_size=10,
+            max_overflow=20
+        )
 
     def _load_config(self, config_path):
         """Load migration configuration"""
@@ -33,18 +40,16 @@ class DataMigrationTracker:
 
     def get_sybase_table_stats(self, table_name):
         """Get total record count and data size for Sybase table"""
-        with pyodbc.connect(self.config['sybase_connection_string']) as conn:
-            cursor = conn.cursor()
-            record_count_query = f"SELECT COUNT(*) FROM {table_name}"
-            size_query = f"sp_spaceused {table_name}"
+        with self.sybase_engine.connect() as conn:
+            record_count_query = text(f"SELECT COUNT(*) as count FROM {table_name}")
+            size_query = text(f"sp_spaceused {table_name}")
             
-            record_count = cursor.execute(record_count_query).fetchone()[0]
-            cursor.execute(size_query)
-            size_info = cursor.fetchall()
+            record_count = conn.execute(record_count_query).fetchone()[0]
+            size_result = conn.execute(size_query).fetchall()
             
             return {
                 'total_records': record_count,
-                'total_size_mb': float(size_info[0][1])
+                'total_size_mb': float(size_result[0][1]) if size_result else 0
             }
 
     def partition_table(self, table_name, num_partitions=10):
@@ -54,15 +59,15 @@ class DataMigrationTracker:
         # Determine partition strategy based on primary key or date column
         partition_column = self.config['tables'][table_name].get('partition_column', 'id')
         
-        with pyodbc.connect(self.config['sybase_connection_string']) as conn:
-            query = f"""
+        with self.sybase_engine.connect() as conn:
+            min_max_query = text(f"""
             SELECT 
                 MIN({partition_column}) as min_val,
                 MAX({partition_column}) as max_val
             FROM {table_name}
-            """
-            df = pd.read_sql(query, conn)
-            min_val, max_val = df.iloc[0]['min_val'], df.iloc[0]['max_val']
+            """)
+            result = conn.execute(min_max_query).fetchone()
+            min_val, max_val = result['min_val'], result['max_val']
         
         # Create partitions
         step = (max_val - min_val) / num_partitions
@@ -80,14 +85,19 @@ class DataMigrationTracker:
     def extract_partition(self, table_name, partition):
         """Extract data partition to S3"""
         try:
-            with pyodbc.connect(self.config['sybase_connection_string']) as conn:
-                partition_column = self.config['tables'][table_name].get('partition_column', 'id')
-                query = f"""
-                SELECT * FROM {table_name}
-                WHERE {partition_column} >= {partition['min']} 
-                  AND {partition_column} < {partition['max']}
-                """
-                df = pd.read_sql(query, conn)
+            partition_column = self.config['tables'][table_name].get('partition_column', 'id')
+            query = text(f"""
+            SELECT * FROM {table_name}
+            WHERE {partition_column} >= :min 
+              AND {partition_column} < :max
+            """)
+            
+            with self.sybase_engine.connect() as conn:
+                df = pd.read_sql(
+                    query, 
+                    conn, 
+                    params={'min': partition['min'], 'max': partition['max']}
+                )
                 
                 # Convert to Parquet for efficient storage
                 parquet_file = f"{table_name}_{partition['partition_id']}.parquet"

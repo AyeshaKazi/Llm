@@ -2,7 +2,7 @@ import pyodbc
 
 # Connection Parameters
 conn_params = {
-    'driver': '/usr/lib/libtdsodbc.so',
+    'driver': 'Sybase',  # Likely the default Sybase driver
     'server': 'your_server_hostname',
     'port': 5000,
     'database': 'your_database_name',

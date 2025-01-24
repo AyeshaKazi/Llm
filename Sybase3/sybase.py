@@ -1,32 +1,21 @@
-import sybase
+from sqlalchemy import create_engine, text
 
-def sybase_connection():
-    try:
-        # Establish connection
-        conn = sybase.connect(
-            host='hostname',
-            port=5000,
-            user='username', 
-            password='password',
-            database='dbname'
-        )
-        
-        # Create cursor
-        cursor = conn.cursor()
-        
-        # Execute query
-        cursor.execute("SELECT * FROM your_table")
-        
-        # Fetch results
-        results = cursor.fetchall()
-        
-        # Process results
-        for row in results:
-            print(row)
-        
-        # Close cursor and connection
-        cursor.close()
-        conn.close()
-        
-    except sybase.Error as e:
-        print(f"Database connection error: {e}")
+# Connection String
+connection_string = (
+    'sybase+sqlalchemy_sybase://username:password@hostname:port/database'
+)
+
+# Create Engine
+engine = create_engine(connection_string)
+
+# Test Connection
+with engine.connect() as connection:
+    result = connection.execute(text("SELECT @@version"))
+    print("Server Version:", result.fetchone()[0])
+
+# Example Query
+with engine.connect() as connection:
+    query = text("SELECT * FROM your_table LIMIT 5")
+    results = connection.execute(query)
+    for row in results:
+        print(row)

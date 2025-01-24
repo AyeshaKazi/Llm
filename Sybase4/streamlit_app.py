@@ -3,6 +3,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
 import sys
+import logging
 sys.path.append('.')  # Add current directory to path
 from sybase_connection import SybaseTableAnalyzer
 
@@ -16,7 +17,11 @@ def main():
     password = st.sidebar.text_password("Password")
     database_name = st.sidebar.text_input("Database Name")
 
-    if st.sidebar.button("Connect and Analyze"):
+    # Initialize session state for selected tables
+    if 'selected_tables' not in st.session_state:
+        st.session_state.selected_tables = []
+
+    if st.sidebar.button("Connect and List Tables"):
         try:
             # Initialize analyzer
             analyzer = SybaseTableAnalyzer(
@@ -28,93 +33,98 @@ def main():
             # Get tables
             tables = analyzer.get_database_tables(database_name)
             
-            # Analyze each table
-            table_metrics = {}
-            for table in tables:
-                metrics = analyzer.analyze_table(database_name, table)
-                transfer_metrics = analyzer.estimate_transfer_time(metrics)
-                metrics['transfer_metrics'] = transfer_metrics
-                table_metrics[table] = metrics
+            # Display tables with multiselect
+            st.session_state.selected_tables = st.multiselect(
+                "Select Tables for Analysis", 
+                tables
+            )
             
-            # Display Tables Overview
-            st.header("Tables Overview")
-            overview_data = []
-            for table, metrics in table_metrics.items():
-                overview_data.append({
-                    "Table": table,
-                    "Row Count": metrics.get('row_count', 0),
-                    "Size (MB)": metrics.get('transfer_metrics', {}).get('estimated_size_mb', 0),
-                    "Transfer Time (min)": metrics.get('transfer_metrics', {}).get('estimated_transfer_time_minutes', 0)
-                })
-            
-            overview_df = pd.DataFrame(overview_data)
-            st.dataframe(overview_df)
-            
-            # Visualizations
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.subheader("Row Count by Table")
-                fig_rows = px.bar(
-                    overview_df, 
-                    x="Table", 
-                    y="Row Count", 
-                    title="Row Count Comparison"
-                )
-                st.plotly_chart(fig_rows)
-            
-            with col2:
-                st.subheader("Transfer Time by Table")
-                fig_transfer = px.bar(
-                    overview_df, 
-                    x="Table", 
-                    y="Transfer Time (min)", 
-                    title="Estimated Transfer Time"
-                )
-                st.plotly_chart(fig_transfer)
-            
-            # Detailed Table Analysis
-            st.header("Detailed Table Analysis")
-            selected_table = st.selectbox("Select Table for Detailed View", tables)
-            
-            if selected_table:
-                table_data = table_metrics[selected_table]
-                
-                st.subheader(f"Details for {selected_table}")
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.write("**Basic Metrics:**")
-                    st.json({
-                        "Row Count": table_data.get('row_count', 'N/A'),
-                        "Columns": table_data.get('columns', []),
-                        "Estimated Size (MB)": table_data.get('transfer_metrics', {}).get('estimated_size_mb', 'N/A')
-                    })
-                
-                with col2:
-                    st.write("**Transfer Metrics:**")
-                    st.json(table_data.get('transfer_metrics', {}))
-                
-                # Null Count Visualization
-                null_counts = table_data.get('null_counts', {})
-                null_df = pd.DataFrame.from_dict(null_counts, orient='index', columns=['Null Count'])
-                null_df.index.name = 'Column'
-                null_df = null_df.reset_index()
-                
-                st.subheader("Null Counts by Column")
-                fig_nulls = px.bar(
-                    null_df, 
-                    x="Column", 
-                    y="Null Count", 
-                    title="Null Counts in Columns"
-                )
-                st.plotly_chart(fig_nulls)
-            
-            # Clean up
-            analyzer.close()
+            # Store analyzer in session state for later use
+            st.session_state.analyzer = analyzer
+            st.session_state.database_name = database_name
         
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
+    # Analyze selected tables
+    if st.session_state.get('selected_tables'):
+        st.header("Selected Tables Analysis")
+        
+        # Tabs for each selected table
+        tabs = st.tabs(st.session_state.selected_tables)
+        
+        # Analyze each selected table
+        for i, table in enumerate(st.session_state.selected_tables):
+            with tabs[i]:
+                try:
+                    # Retrieve analyzer from session state
+                    analyzer = st.session_state.get('analyzer')
+                    database_name = st.session_state.get('database_name')
+                    
+                    # Analyze the table
+                    table_metrics = analyzer.analyze_table(database_name, table)
+                    transfer_metrics = analyzer.estimate_transfer_time(table_metrics)
+                    
+                    # Display metrics in columns
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.subheader("Basic Metrics")
+                        st.write(f"**Row Count:** {table_metrics.get('row_count', 'N/A')}")
+                        st.write(f"**Columns:** {len(table_metrics.get('columns', []))}")
+                        
+                        st.subheader("Transfer Metrics")
+                        st.write(f"**Estimated Size:** {transfer_metrics.get('estimated_size_mb', 'N/A')} MB")
+                        st.write(f"**Estimated Transfer Time:** {transfer_metrics.get('estimated_transfer_time_minutes', 'N/A')} minutes")
+                    
+                    with col2:
+                        st.subheader("Potential Partition Keys")
+                        partition_keys = table_metrics.get('potential_partition_keys', [])
+                        if partition_keys:
+                            partition_df = pd.DataFrame(partition_keys)
+                            st.dataframe(partition_df)
+                        else:
+                            st.write("No recommended partition keys found")
+                    
+                    # Visualizations
+                    col3, col4 = st.columns(2)
+                    
+                    with col3:
+                        # Null Count Visualization
+                        st.subheader("Null Counts")
+                        null_counts = table_metrics.get('null_counts', {})
+                        null_df = pd.DataFrame.from_dict(null_counts, orient='index', columns=['Null Count'])
+                        null_df.index.name = 'Column'
+                        null_df = null_df.reset_index()
+                        
+                        if not null_df.empty:
+                            fig_nulls = px.bar(
+                                null_df, 
+                                x="Column", 
+                                y="Null Count", 
+                                title="Null Counts by Column"
+                            )
+                            st.plotly_chart(fig_nulls)
+                    
+                    with col4:
+                        # Column Types Visualization
+                        st.subheader("Column Types")
+                        column_types = table_metrics.get('column_types', {})
+                        types_df = pd.DataFrame.from_dict(column_types, orient='index', columns=['Data Type'])
+                        types_df.index.name = 'Column'
+                        types_df = types_df.reset_index()
+                        
+                        if not types_df.empty:
+                            fig_types = px.pie(
+                                types_df, 
+                                names="Column", 
+                                values=[1]*len(types_df), 
+                                title="Column Types Distribution"
+                            )
+                            st.plotly_chart(fig_types)
+                
+                except Exception as e:
+                    st.error(f"Error analyzing table {table}: {e}")
 
 if __name__ == "__main__":
     main()

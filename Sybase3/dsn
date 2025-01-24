@@ -1,0 +1,14 @@
+/etc/odbcinst.ini
+  [Sybase]
+Description = Sybase ASE ODBC Driver
+Driver = /path/to/libsybdbodbc.so
+
+/etc/odbc.ini
+[SybaseDSN]
+Driver = Sybase
+Server = your_server_name
+Port = 5000
+Database = your_database
+
+
+  connection_string = "sybase+pyodbc:///SybaseDSN"

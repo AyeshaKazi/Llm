@@ -11,6 +11,11 @@ def main():
     
     st.title("Sybase Database Table Analyzer")
     
+    # Initialize session state for connection and tables
+    if 'connector' not in st.session_state:
+        st.session_state.connector = None
+        st.session_state.tables = []
+    
     # Database Connection Parameters
     with st.form(key='connection_form'):
         col1, col2 = st.columns(2)
@@ -35,20 +40,31 @@ def main():
             )
             connector.connect()
             
-            # Retrieve Tables
-            tables = connector.get_tables()
+            # Store connector and tables in session state
+            st.session_state.connector = connector
+            st.session_state.tables = connector.get_tables()
             
-            st.success(f"Connected! Found {len(tables)} tables.")
+            st.success(f"Connected! Found {len(st.session_state.tables)} tables.")
+        
+        except Exception as e:
+            st.error(f"Error: {str(e)}")
+            logger.error(f"Application error: {str(e)}")
+    
+    # Table Selection (only show if connected)
+    if st.session_state.connector:
+        selected_tables = st.multiselect("Select Tables to Analyze", st.session_state.tables)
+        
+        if st.button("Analyze Selected Tables"):
+            if not selected_tables:
+                st.warning("Please select at least one table.")
+                return
             
-            # Table Selection
-            selected_tables = st.multiselect("Select Tables to Analyze", tables)
-            
-            if st.button("Analyze Selected Tables"):
+            try:
                 # Initialize Spark Analyzer
                 spark_analyzer = SparkTableAnalyzer(logger, num_workers)
                 
                 # Analyze Tables
-                results = spark_analyzer.analyze_tables(connector, selected_tables)
+                results = spark_analyzer.analyze_tables(st.session_state.connector, selected_tables)
                 
                 # Display Results
                 for result in results:
@@ -77,10 +93,10 @@ def main():
                         values=list(type_counts.values())
                     )])
                     st.plotly_chart(fig)
-        
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
-            logger.error(f"Application error: {str(e)}")
+            
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
+                logger.error(f"Analysis error: {str(e)}")
 
 if __name__ == "__main__":
     main()

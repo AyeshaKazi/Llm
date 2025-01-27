@@ -14,6 +14,7 @@ def main():
         st.session_state.connector = None
         st.session_state.tables = []
         st.session_state.results = []
+        st.session_state.analysis_done = False
     
     with st.form(key='connection_form'):
         col1, col2 = st.columns(2)
@@ -48,57 +49,58 @@ def main():
             
             try:
                 spark_analyzer = SparkTableAnalyzer(logger, num_workers)
-                results = spark_analyzer.analyze_tables(st.session_state.connector, selected_tables)
-                st.session_state.results = results  # Store results in session state
+                st.session_state.results = spark_analyzer.analyze_tables(st.session_state.connector, selected_tables)
+                st.session_state.analysis_done = True
                 
-                # Display results and column selection for each table
-                for idx, result in enumerate(results):
-                    st.subheader(f"Table: {result['table_name']}")
-                    
-                    # Initialize column selection in session state if not present
-                    if f'selected_columns_{idx}' not in st.session_state:
-                        st.session_state[f'selected_columns_{idx}'] = []
-                    
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Row Count", int(result['row_count']))
-                    
-                    with col2:
-                        # Get available columns for this table
-                        available_columns = result.get('column_names', [])  # Make sure your spark_analyzer returns this
-                        
-                        # Store column selection in session state and results
-                        selected_columns = st.multiselect(
-                            "Select Columns to partition by",
-                            available_columns,
-                            key=f'selected_columns_{idx}'
-                        )
-                        
-                        # Update the results with selected columns
-                        st.session_state.results[idx]['selected_columns'] = selected_columns
-                        
-                    # Display column type distribution if available
-                    if 'column_types' in result:
-                        st.subheader("Column Type Distribution")
-                        type_counts = {}
-                        for dtype in result['column_types'].values():
-                            type_counts[dtype] = type_counts.get(dtype, 0) + 1
-                        
-                        fig = go.Figure(data=[go.Pie(
-                            labels=list(type_counts.keys()),
-                            values=list(type_counts.values())
-                        )])
-                        st.plotly_chart(fig)
-            
             except Exception as e:
                 st.error(f"Error: {str(e)}")
                 logger.error(f"Analysis error: {str(e)}")
-            
-            # You can now access the selected columns from st.session_state.results
-            if st.button("Show Selected Columns"):
-                for result in st.session_state.results:
-                    st.write(f"Table: {result['table_name']}")
-                    st.write(f"Selected columns: {result.get('selected_columns', [])}")
+        
+        # Display results only if analysis has been done
+        if st.session_state.analysis_done and st.session_state.results:
+            for idx, result in enumerate(st.session_state.results):
+                st.subheader(f"Table: {result['table_name']}")
+                
+                # Initialize column selection in session state if not present
+                if f'selected_columns_{idx}' not in st.session_state:
+                    st.session_state[f'selected_columns_{idx}'] = []
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Row Count", int(result['row_count']))
+                    st.metric("Table Size", result['table_size'])
+                    st.metric("Primary Keys", ", ".join(result['primary_keys']))
+                
+                with col2:
+                    # Get columns from metadata
+                    available_columns = result['metadata'].get('column_names', [])
+                    
+                    # Store column selection in session state
+                    selected_columns = st.multiselect(
+                        "Select Columns to partition by",
+                        options=available_columns,
+                        key=f'table_{idx}_columns'
+                    )
+                    
+                    # Update the results with selected columns
+                    st.session_state.results[idx]['selected_columns'] = selected_columns
+                
+                # Display column type distribution
+                if 'column_types' in result:
+                    st.subheader("Column Type Distribution")
+                    type_counts = {}
+                    for dtype in result['column_types'].values():
+                        type_counts[dtype] = type_counts.get(dtype, 0) + 1
+                    
+                    fig = go.Figure(data=[go.Pie(
+                        labels=list(type_counts.keys()),
+                        values=list(type_counts.values())
+                    )])
+                    st.plotly_chart(fig)
+                
+                # Display selected columns for debugging
+                if selected_columns:
+                    st.write("Currently selected columns:", selected_columns)
 
 if __name__ == "__main__":
     main()

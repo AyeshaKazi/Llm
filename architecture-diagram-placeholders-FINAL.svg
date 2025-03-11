@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Gradient Definitions -->
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1c2c" />
+      <stop offset="100%" stop-color="#16213e" />
+    </linearGradient>
+    
+    <!-- Core gradient -->
+    <linearGradient id="coreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4158D0" />
+      <stop offset="50%" stop-color="#C850C0" />
+      <stop offset="100%" stop-color="#FFCC70" />
+    </linearGradient>
+    
+    <!-- Capability gradients -->
+    <linearGradient id="cap1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3CAC" />
+      <stop offset="100%" stop-color="#784BA0" />
+    </linearGradient>
+    
+    <linearGradient id="cap2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F260" />
+      <stop offset="100%" stop-color="#0575E6" />
+    </linearGradient>
+    
+    <linearGradient id="cap3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F9D423" />
+      <stop offset="100%" stop-color="#FF4E50" />
+    </linearGradient>
+    
+    <linearGradient id="cap4Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066FF" />
+      <stop offset="100%" stop-color="#00CCFF" />
+    </linearGradient>
+    
+    <linearGradient id="cap5Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5E7E" />
+      <stop offset="100%" stop-color="#FF9966" />
+    </linearGradient>
+    
+    <linearGradient id="cap6Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A47D5" />
+      <stop offset="100%" stop-color="#00d2ff" />
+    </linearGradient>
+    
+    <linearGradient id="cap7Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8e2de2" />
+      <stop offset="100%" stop-color="#4a00e0" />
+    </linearGradient>
+    
+    <!-- Glow effects -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Line animations -->
+    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1">
+        <animate attributeName="offset" values="0;1" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="25%" stop-color="#ffffff" stop-opacity="0.8">
+        <animate attributeName="offset" values="0.25;1.25" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.1">
+        <animate attributeName="offset" values="0.5;1.5" dur="3s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGradient)" rx="15" ry="15" />
+  <circle cx="400" cy="300" r="280" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.3" />
+  <circle cx="400" cy="300" r="240" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.2" />
+  <circle cx="400" cy="300" r="200" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.1" />
+  
+  <!-- Decorative elements -->
+  <g opacity="0.1">
+    <circle cx="150" cy="100" r="3" fill="#ffffff" />
+    <circle cx="650" cy="100" r="2" fill="#ffffff" />
+    <circle cx="200" cy="500" r="4" fill="#ffffff" />
+    <circle cx="700" cy="450" r="3" fill="#ffffff" />
+    <circle cx="100" cy="350" r="2" fill="#ffffff" />
+    <circle cx="750" cy="250" r="4" fill="#ffffff" />
+  </g>
+  
+  <!-- Central Application Hub with pulse animation -->
+  <circle cx="400" cy="300" r="110" fill="url(#coreGradient)" opacity="0.9" filter="url(#glow)">
+    <animate attributeName="r" values="110;115;110" dur="3s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="400" cy="300" r="95" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.3" />
+  
+  <!-- Core App Placeholder -->
+  <rect x="350" y="250" width="100" height="100" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="400" y="300" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Core Icon</text>
+  
+  <!-- Core App Label -->
+  <text x="400" y="335" font-family="Arial" font-size="20" fill="white" text-anchor="middle" font-weight="bold">Application Core</text>
+  
+  <!-- Capability 1: Use case understanding -->
+  <circle cx="230" cy="150" r="70" fill="url(#cap1Gradient)" opacity="0.9" filter="url(#glow)" />
+  <circle cx="230" cy="150" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Use Case Understanding Placeholder -->
+  <rect x="190" y="110" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="230" y="150" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Use Case Icon</text>
+  
+  <!-- Use Case Understanding Label -->
+  <text x="230" y="178" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">Use Case</text>
+  <text x="230" y="198" font-family="Arial" font-size="16" fill="white" text-anchor="middle">Understanding</text>
+  
+  <!-- Capability 2: Platform onboarding -->
+  <circle cx="570" cy="150" r="70" fill="url(#cap2Gradient)" opacity="0.7" filter="url(#glow)" />
+  <circle cx="570" cy="150" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Platform Onboarding Placeholder -->
+  <!-- <rect x="530" y="110" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" /> -->
+<!-- 
+  <text x="570" y="145" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Snowflake</text>
+  <text x="570" y="160" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Airflow Logos</text> -->
+
+  
+  <!-- Platform Onboarding Label -->
+  <image x="520" y="100" width="100" height="75" href="snowflake_logo.png" />
+  <text x="570" y="165" font-family="Arial" font-size="12" fill="white" text-anchor="middle">Platform</text>
+  <text x="570" y="185" font-family="Arial" font-size="12" fill="white" text-anchor="middle">Onboarding</text>
+  
+  <!-- Capability 3: Need-based platform customization -->
+  <circle cx="650" cy="300" r="70" fill="url(#cap3Gradient)" opacity="0.9" filter="url(#glow)" />
+  <circle cx="650" cy="300" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Need-based Platform Customization Placeholder -->
+  <rect x="610" y="260" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="650" y="300" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Customization</text>
+  <text x="650" y="315" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Icon</text>
+  
+  <!-- Need-based Platform Customization Label -->
+  <text x="650" y="335" font-family="Arial" font-size="15" fill="white" text-anchor="middle" font-weight="bold">Need-based Platform</text>
+  <text x="650" y="355" font-family="Arial" font-size="15" fill="white" text-anchor="middle">Customization</text>
+  
+  <!-- Capability 4: Data Ingestion -->
+  <circle cx="570" cy="450" r="70" fill="url(#cap4Gradient)" opacity="0.9" filter="url(#glow)" />
+  <circle cx="570" cy="450" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Data Ingestion Placeholder -->
+  <rect x="530" y="410" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="570" y="450" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add StreamSets</text>
+  <text x="570" y="465" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Logo</text>
+  
+  <!-- Data Ingestion Label -->
+  <text x="570" y="480" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">Data Ingestion</text>
+  <text x="570" y="500" font-family="Arial" font-size="15" fill="white" text-anchor="middle">(Batch &amp; Streaming)</text>
+  
+  <!-- Capability 5: Consumption Patterns -->
+  <circle cx="230" cy="450" r="70" fill="url(#cap5Gradient)" opacity="0.9" filter="url(#glow)" />
+  <circle cx="230" cy="450" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Consumption Patterns Placeholder -->
+  <rect x="190" y="410" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="230" y="450" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Consumption</text>
+  <text x="230" y="465" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Icon</text>
+  
+  <!-- Consumption Patterns Label -->
+  <text x="230" y="480" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">Consumption</text>
+  <text x="230" y="500" font-family="Arial" font-size="16" fill="white" text-anchor="middle">Patterns</text>
+  
+  <!-- Capability 6: Monitoring and Alerting -->
+  <circle cx="150" cy="300" r="70" fill="url(#cap6Gradient)" opacity="0.9" filter="url(#glow)" />
+  <circle cx="150" cy="300" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Monitoring and Alerting Placeholder -->
+  <rect x="110" y="260" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="150" y="295" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Grafana</text>
+  <text x="150" y="310" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">&amp; Splunk Logos</text>
+  
+  <!-- Monitoring and Alerting Label -->
+  <text x="150" y="335" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">Monitoring</text>
+  <text x="150" y="355" font-family="Arial" font-size="16" fill="white" text-anchor="middle">and Alerting</text>
+  
+  <!-- Capability 7: Production Setup and exit strategy -->
+  <circle cx="400" cy="520" r="70" fill="url(#cap7Gradient)" opacity="0.9" filter="url(#glow)" />
+  <circle cx="400" cy="520" r="60" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
+  
+  <!-- Production Setup and Exit Strategy Placeholder -->
+  <rect x="360" y="480" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4" rx="5" ry="5" />
+  <text x="400" y="520" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Add Production</text>
+  <text x="400" y="535" font-family="Arial" font-size="10" fill="white" text-anchor="middle" font-style="italic">Setup Icon</text>
+  
+  <!-- Production Setup and Exit Strategy Label -->
+  <text x="400" y="555" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">Production Setup</text>
+  <text x="400" y="575" font-family="Arial" font-size="16" fill="white" text-anchor="middle">and Exit Strategy</text>
+  
+  <!-- Connection lines with animation effects -->
+  <line x1="282" y1="190" x2="358" y2="258" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="282" y1="190" x2="358" y2="258" stroke="#FF3CAC" stroke-width="3" opacity="0.5" />
+  
+  <line x1="518" y1="190" x2="442" y2="258" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="518" y1="190" x2="442" y2="258" stroke="#00F260" stroke-width="3" opacity="0.5" />
+  
+  <line x1="594" y1="341" x2="485" y2="341" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="594" y1="341" x2="485" y2="341" stroke="#F9D423" stroke-width="3" opacity="0.5" />
+  
+  <line x1="518" y1="408" x2="442" y2="342" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="518" y1="408" x2="442" y2="342" stroke="#0066FF" stroke-width="3" opacity="0.5" />
+  
+  <line x1="282" y1="408" x2="358" y2="342" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="282" y1="408" x2="358" y2="342" stroke="#FF5E7E" stroke-width="3" opacity="0.5" />
+  
+  <line x1="206" y1="341" x2="315" y2="341" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="206" y1="341" x2="315" y2="341" stroke="#3A47D5" stroke-width="3" opacity="0.5" />
+  
+  <line x1="400" y1="464" x2="400" y2="396" stroke="url(#lineGradient)" stroke-width="3" opacity="0.8" />
+  <line x1="400" y1="464" x2="400" y2="396" stroke="#8e2de2" stroke-width="3" opacity="0.5" />
+  
+  <!-- Flow arrows with glow effect -->
+  <polygon points="358,258 348,253 353,264" fill="#FF3CAC" filter="url(#glow)" />
+  <polygon points="442,258 452,253 447,264" fill="#00F260" filter="url(#glow)" />
+  <polygon points="485,341 495,346 495,336" fill="#F9D423" filter="url(#glow)" />
+  <polygon points="442,342 452,347 447,336" fill="#0066FF" filter="url(#glow)" />
+  <polygon points="358,342 348,347 353,336" fill="#FF5E7E" filter="url(#glow)" />
+  <polygon points="315,341 305,346 305,336" fill="#3A47D5" filter="url(#glow)" />
+  <polygon points="400,396 405,386 395,386" fill="#8e2de2" filter="url(#glow)" />
+  
+  <!-- Title with fancy styling -->
+  <text x="400" y="50" font-family="Arial" font-size="28" fill="white" text-anchor="middle" font-weight="bold" filter="url(#glow)">Application Capabilities Architecture</text>
+  <text x="400" y="80" font-family="Arial" font-size="16" fill="#C0C0C0" text-anchor="middle" opacity="0.7">Dynamic Platform Ecosystem</text>
+</svg>

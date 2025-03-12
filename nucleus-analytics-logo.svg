@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A6EA5" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#004E98" stop-opacity="0.7" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6A8EAE" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#3A6EA5" stop-opacity="0.6" />
+    </linearGradient>
+    <radialGradient id="coreGradient" cx="50%" cy="50%" r="50%" fx="45%" fy="45%">
+      <stop offset="0%" stop-color="#E8EEF2" stop-opacity="0.9" />
+      <stop offset="70%" stop-color="#6A8EAE" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#3A6EA5" stop-opacity="0.7" />
+    </radialGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Improved orbits with subtle tilt and elegance -->
+  <ellipse cx="150" cy="150" rx="125" ry="65" fill="none" stroke="url(#primaryGradient)" stroke-width="1.5" transform="rotate(20 150 150)" />
+  
+  <ellipse cx="150" cy="150" rx="125" ry="65" fill="none" stroke="url(#primaryGradient)" stroke-width="1.5" transform="rotate(80 150 150)" />
+  
+  <ellipse cx="150" cy="150" rx="125" ry="65" fill="none" stroke="url(#primaryGradient)" stroke-width="1.5" transform="rotate(140 150 150)" />
+  
+  <!-- Core nucleus with refined gradient -->
+  <circle cx="150" cy="150" r="40" fill="url(#coreGradient)" filter="url(#softGlow)" />
+  
+  <!-- Refined inner particles -->
+  <circle cx="136" cy="142" r="10" fill="#6A8EAE" fill-opacity="0.9" />
+  <circle cx="164" cy="144" r="8" fill="#6A8EAE" fill-opacity="0.8" />
+  <circle cx="150" cy="165" r="12" fill="#3A6EA5" fill-opacity="0.9" />
+  
+  <!-- Subtle electron particles -->
+  <circle cx="260" cy="150" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  <circle cx="40" cy="150" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  <circle cx="150" cy="40" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  <circle cx="150" cy="260" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  
+  <!-- Additional electrons at orbit intersections -->
+  <circle cx="205" cy="80" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  <circle cx="95" cy="220" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  <circle cx="220" cy="220" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+  <circle cx="80" cy="80" r="4" fill="#E8EEF2" filter="url(#softGlow)" />
+</svg>

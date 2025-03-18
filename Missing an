@@ -1,0 +1,82 @@
+import sqlparse
+from sqlparse.sql import Identifier, Parenthesis
+from sqlparse.tokens import Keyword
+
+def extract_table_name(token):
+    """
+    Extracts table name from a JOIN statement token.
+    Supports table aliases and subqueries.
+    """
+    if isinstance(token, Identifier):
+        return str(token.get_real_name())
+    elif isinstance(token, Parenthesis):
+        return "Subquery"
+    return str(token)
+
+def find_missing_join_conditions(query):
+    """
+    Checks if there are JOINs in the SQL query missing an ON or USING clause and identifies the table or subquery.
+    
+    :param query: SQL query as a string
+    :return: List of warnings indicating missing join conditions with table names or subquery usage
+    """
+    parsed = sqlparse.parse(query)
+    warnings = []
+
+    for stmt in parsed:
+        tokens = list(stmt.flatten())
+        join_positions = []
+
+        # Identify JOIN positions and corresponding tables or subqueries
+        for i, token in enumerate(tokens):
+            if token.match(Keyword, ("JOIN", "INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN")):
+                # Check if the next token is a subquery (Parenthesis) or a table
+                table_name = "Unknown"
+                if i + 1 < len(tokens):
+                    table_name = extract_table_name(tokens[i + 1])
+                join_positions.append((i, table_name))
+
+        # Check for missing ON or USING clause
+        for pos, table_name in join_positions:
+            has_condition = False
+            for j in range(pos + 1, min(pos + 6, len(tokens))):
+                if tokens[j].match(Keyword, ("ON", "USING")):
+                    has_condition = True
+                    break
+            if not has_condition:
+                warnings.append(f"⚠️ Missing ON/USING condition for JOIN on '{table_name}'.")
+    
+    return warnings
+
+# Example SQL Queries with Subquery Joins
+sql_queries = [
+    # Missing ON for Subquery
+    """SELECT * FROM users u 
+       JOIN (SELECT user_id, amount FROM payments) p
+       JOIN orders o ON u.id = o.user_id""",  
+
+    # Valid Join on Subquery with ON
+    """SELECT * FROM users u 
+       JOIN (SELECT user_id, amount FROM payments) p ON u.id = p.user_id
+       JOIN orders o ON u.id = o.user_id""",  
+
+    # Missing ON for Table
+    """SELECT * FROM customers c 
+       JOIN orders o
+       JOIN (SELECT order_id, status FROM shipments) s""",
+
+    # All Valid Joins
+    """SELECT * FROM employees e 
+       JOIN departments d USING (department_id) 
+       JOIN (SELECT location_id, city FROM locations) l ON e.location_id = l.location_id"""
+]
+
+for query in sql_queries:
+    print(f"Checking Query:\n{query}\n")
+    issues = find_missing_join_conditions(query)
+    if issues:
+        for issue in issues:
+            print(issue)
+    else:
+        print("✅ All JOINs have ON/USING conditions.")
+    print("-" * 80)

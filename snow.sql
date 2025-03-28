@@ -93,3 +93,21 @@ class pdf_text_chunker:
 
         yield from df.itertuples(index=False, name=None)
 $$;
+
+
+-- Now let's create a table to hold the parsed data from the PDF files.
+CREATE OR REPLACE TABLE aw_spcs_db.public.swiss_faq_chunks AS
+    SELECT
+        relative_path,
+        build_scoped_file_url(@aw_spcs_db.public.aw_spcs_pdf_stage, relative_path) AS file_url,
+        -- preserve file title information by concatenating relative_path with the chunk
+        CONCAT(relative_path, ': ', func.chunk) AS chunk,
+        'English' AS language
+    FROM
+        directory(@aw_spcs_db.public.aw_spcs_pdf_stage),
+        TABLE(aw_spcs_db.public.pdf_text_chunker(build_scoped_file_url(@aw_spcs_db.public.aw_spcs_pdf_stage,
+        relative_path))) AS func
+        ;
+
+-- Let's check the results
+SELECT * FROM aw_spcs_db.public.swiss_faq_chunks;

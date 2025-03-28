@@ -127,3 +127,18 @@ CREATE OR REPLACE CORTEX SEARCH SERVICE aw_spcs_db.public.aw_spcs_search_svc
         language
     FROM aw_spcs_db.public.swiss_faq_chunks
     );
+-- Let's confirm the service has populated the data correctly
+SELECT PARSE_JSON(
+  SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
+      'aw_spcs_db.public.aw_spcs_search_svc',
+      '{
+        "query": "POWERPAY's E-mail",
+        "columns":[
+            "chunk",
+            "language"
+        ],
+        "filter": {"@eq": {"language": "English"} },
+        "limit":1
+      }'
+  )
+)['results'] as results;

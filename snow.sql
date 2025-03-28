@@ -111,3 +111,19 @@ CREATE OR REPLACE TABLE aw_spcs_db.public.swiss_faq_chunks AS
 
 -- Let's check the results
 SELECT * FROM aw_spcs_db.public.swiss_faq_chunks;
+
+
+-- Create a search service over aw_spcs_db.public.swiss_faq_chunks
+CREATE OR REPLACE CORTEX SEARCH SERVICE aw_spcs_db.public.aw_spcs_search_svc
+    ON chunk
+    ATTRIBUTES language
+    WAREHOUSE = compute_wh
+    TARGET_LAG = '1 hour'
+    AS (
+    SELECT
+        chunk,
+        relative_path,
+        file_url,
+        language
+    FROM aw_spcs_db.public.swiss_faq_chunks
+    );

@@ -1,0 +1,11 @@
+id,name,location,price_tier,start_date,end_date,booked
+1,Europcar,Basel,Economy,2024-04-14,2024-04-11,0
+2,Avis,Basel,Luxury,2024-04-10,2024-04-20,0
+3,Hertz,Zurich,Midsize,2024-04-10,2024-04-07,0
+4,Sixt,Bern,SUV,2024-04-20,2024-04-26,0
+5,Budget,Lucerne,Compact,2024-04-01,2024-04-19,0
+6,Alamo,Geneva,Full-size,2024-04-27,2024-04-18,0
+7,Enterprise,Basel,Premium,2024-04-22,2024-04-20,0
+8,National,Zurich,Economy,2024-04-08,2024-04-21,0
+9,Thrifty,Basel,Midsize,2024-04-17,2024-04-26,0
+10,Dollar,Bern,Compact,2024-04-23,2024-04-03,0

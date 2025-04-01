@@ -1,0 +1,116 @@
+airport_code,airport_name,city,coordinates,timezone
+ATL,Hartsfield-Jackson Atlanta International Airport,Atlanta,"[33.6407, -84.4277]",America/New_York
+PEK,Beijing Capital International Airport,Beijing,"[40.0799, 116.6031]",Asia/Shanghai
+DXB,Dubai International Airport,Dubai,"[25.2532, 55.3657]",Asia/Dubai
+LAX,Los Angeles International Airport,Los Angeles,"[33.9416, -118.4085]",America/Los_Angeles
+HND,Tokyo Haneda Airport,Tokyo,"[35.5494, 139.7798]",Asia/Tokyo
+ORD,O'Hare International Airport,Chicago,"[41.9742, -87.9073]",America/Chicago
+LHR,London Heathrow Airport,London,"[51.47, -0.4543]",Europe/London
+CDG,Charles de Gaulle Airport,Paris,"[49.0097, 2.5479]",Europe/Paris
+DFW,Dallas/Fort Worth International Airport,Dallas,"[32.8998, -97.0403]",America/Chicago
+HKG,Hong Kong International Airport,Hong Kong,"[22.308, 113.9185]",Asia/Hong_Kong
+JFK,John F. Kennedy International Airport,New York,"[40.6413, -73.7781]",America/New_York
+AMS,Amsterdam Airport Schiphol,Amsterdam,"[52.3105, 4.7683]",Europe/Amsterdam
+FRA,Frankfurt Airport,Frankfurt,"[50.0379, 8.5622]",Europe/Berlin
+PVG,Shanghai Pudong International Airport,Shanghai,"[31.1443, 121.8083]",Asia/Shanghai
+SFO,San Francisco International Airport,San Francisco,"[37.6213, -122.379]",America/Los_Angeles
+ICN,Incheon International Airport,Seoul,"[37.4601, 126.4406]",Asia/Seoul
+DEN,Denver International Airport,Denver,"[39.8561, -104.6737]",America/Denver
+BKK,Suvarnabhumi Airport,Bangkok,"[13.69, 100.7501]",Asia/Bangkok
+MAD,Adolfo Suárez Madrid–Barajas Airport,Madrid,"[40.4839, -3.568]",Europe/Madrid
+SIN,Singapore Changi Airport,Singapore,"[1.3644, 103.9915]",Asia/Singapore
+CAN,Guangzhou Baiyun International Airport,Guangzhou,"[23.3959, 113.308]",Asia/Shanghai
+SEA,Seattle-Tacoma International Airport,Seattle,"[47.4502, -122.3088]",America/Los_Angeles
+MIA,Miami International Airport,Miami,"[25.7959, -80.287]",America/New_York
+BCN,Barcelona-El Prat Airport,Barcelona,"[41.2974, 2.0833]",Europe/Madrid
+YYZ,Toronto Pearson International Airport,Toronto,"[43.6772, -79.6306]",America/Toronto
+PHX,Phoenix Sky Harbor International Airport,Phoenix,"[33.4343, -112.0117]",America/Phoenix
+LAS,Harry Reid International Airport,Las Vegas,"[36.084, -115.1537]",America/Los_Angeles
+IAH,George Bush Intercontinental Airport,Houston,"[29.9844, -95.3414]",America/Chicago
+MUC,Munich Airport,Munich,"[48.3537, 11.775]",Europe/Berlin
+IST,Istanbul Airport,Istanbul,"[41.2658, 28.7425]",Europe/Istanbul
+DEL,Indira Gandhi International Airport,New Delhi,"[28.5562, 77.1]",Asia/Kolkata
+SYD,Sydney Airport,Sydney,"[-33.9399, 151.1753]",Australia/Sydney
+MCO,Orlando International Airport,Orlando,"[28.4312, -81.3081]",America/New_York
+EWR,Newark Liberty International Airport,Newark,"[40.6895, -74.1745]",America/New_York
+LGW,London Gatwick Airport,London,"[51.1481, -0.1903]",Europe/London
+MSP,Minneapolis-Saint Paul International Airport,Minneapolis,"[44.8848, -93.2223]",America/Chicago
+BOM,Chhatrapati Shivaji Maharaj International Airport,Mumbai,"[19.0896, 72.8656]",Asia/Kolkata
+CLT,Charlotte Douglas International Airport,Charlotte,"[35.214, -80.9431]",America/New_York
+KMG,Kunming Changshui International Airport,Kunming,"[25.1019, 102.9292]",Asia/Shanghai
+MNL,Ninoy Aquino International Airport,Manila,"[14.5086, 121.0194]",Asia/Manila
+TPE,Taiwan Taoyuan International Airport,Taipei,"[25.0777, 121.2335]",Asia/Taipei
+MEX,Mexico City International Airport,Mexico City,"[19.436, -99.0719]",America/Mexico_City
+AKL,Auckland Airport,Auckland,"[-37.0082, 174.785]",Pacific/Auckland
+IAD,Washington Dulles International Airport,"Washington, D.C.","[38.9531, -77.4565]",America/New_York
+GRU,São Paulo–Guarulhos International Airport,São Paulo,"[-23.4356, -46.4734]",America/Sao_Paulo
+FCO,Leonardo da Vinci International Airport,Rome,"[41.8002, 12.2389]",Europe/Rome
+CTU,Chengdu Shuangliu International Airport,Chengdu,"[30.5785, 103.947]",Asia/Shanghai
+TPA,Tampa International Airport,Tampa,"[27.9755, -82.5332]",America/New_York
+BOS,Boston Logan International Airport,Boston,"[42.3656, -71.0096]",America/New_York
+YYC,Calgary International Airport,Calgary,"[51.1215, -114.0076]",America/Edmonton
+DME,Moscow Domodedovo Airport,Moscow,"[55.4103, 37.9006]",Europe/Moscow
+VIE,Vienna International Airport,Vienna,"[48.1103, 16.5697]",Europe/Vienna
+SLC,Salt Lake City International Airport,Salt Lake City,"[40.7899, -111.9791]",America/Denver
+DUS,Düsseldorf Airport,Düsseldorf,"[51.2876, 6.7667]",Europe/Berlin
+ORY,Paris Orly Airport,Paris,"[48.7262, 2.3652]",Europe/Paris
+YVR,Vancouver International Airport,Vancouver,"[49.19, -123.1815]",America/Vancouver
+JNB,O. R. Tambo International Airport,Johannesburg,"[-26.1392, 28.246]",Africa/Johannesburg
+ZRH,Zurich Airport,Zurich,"[47.4582, 8.5554]",Europe/Zurich
+NRT,Narita International Airport,Tokyo,"[35.772, 140.3929]",Asia/Tokyo
+LGA,LaGuardia Airport,New York,"[40.7772, -73.8726]",America/New_York
+BRU,Brussels Airport,Brussels,"[50.901, 4.4856]",Europe/Brussels
+CPH,Copenhagen Airport,Copenhagen,"[55.6181, 12.6507]",Europe/Copenhagen
+SVO,Sheremetyevo International Airport,Moscow,"[55.9736, 37.4146]",Europe/Moscow
+MEL,Melbourne Airport,Melbourne,"[-37.669, 144.841]",Australia/Melbourne
+DTW,Detroit Metropolitan Wayne County Airport,Detroit,"[42.2162, -83.3554]",America/Detroit
+ARN,Stockholm Arlanda Airport,Stockholm,"[59.6498, 17.9238]",Europe/Stockholm
+SAW,Istanbul Sabiha Gökçen International Airport,Istanbul,"[40.8983, 29.3092]",Europe/Istanbul
+HAM,Hamburg Airport,Hamburg,"[53.6304, 9.9882]",Europe/Berlin
+ATH,Athens International Airport,Athens,"[37.9364, 23.9445]",Europe/Athens
+CGK,Soekarno-Hatta International Airport,Jakarta,"[-6.1275, 106.6536]",Asia/Jakarta
+LIS,Humberto Delgado Airport,Lisbon,"[38.7813, -9.1359]",Europe/Lisbon
+YUL,Montréal-Pierre Elliott Trudeau International Airport,Montreal,"[45.4706, -73.742]",America/Montreal
+EDI,Edinburgh Airport,Edinburgh,"[55.95, -3.3725]",Europe/London
+DCA,Ronald Reagan Washington National Airport,"Washington, D.C.","[38.8512, -77.0402]",America/New_York
+HEL,Helsinki Airport,Helsinki,"[60.3172, 24.9632]",Europe/Helsinki
+OSL,"Oslo Airport, Gardermoen",Oslo,"[60.2028, 11.084]",Europe/Oslo
+HNL,Daniel K. Inouye International Airport,Honolulu,"[21.3187, -157.9225]",Pacific/Honolulu
+STN,London Stansted Airport,London,"[51.8849, 0.235]",Europe/London
+SAN,San Diego International Airport,San Diego,"[32.7338, -117.1933]",America/Los_Angeles
+WAW,Warsaw Chopin Airport,Warsaw,"[52.1657, 20.9671]",Europe/Warsaw
+CUN,Cancún International Airport,Cancún,"[21.0383, -86.877]",America/Cancun
+SHA,Shanghai Hongqiao International Airport,Shanghai,"[31.1979, 121.3354]",Asia/Shanghai
+BNE,Brisbane Airport,Brisbane,"[-27.3842, 153.1175]",Australia/Brisbane
+DUB,Dublin Airport,Dublin,"[53.4213, -6.27]",Europe/Dublin
+NGO,Chubu Centrair International Airport,Nagoya,"[34.8583, 136.8049]",Asia/Tokyo
+TXL,Berlin Tegel Airport,Berlin,"[52.5597, 13.2877]",Europe/Berlin
+BSL,EuroAirport Basel-Mulhouse-Freiburg,Basel,"[47.5981, 7.5254]",Europe/Zurich
+GVA,Geneva Airport,Geneva,"[46.238, 6.1092]",Europe/Zurich
+PRG,Václav Havel Airport Prague,Prague,"[50.1008, 14.2631]",Europe/Prague
+RIX,Riga International Airport,Riga,"[56.9236, 23.9712]",Europe/Riga
+GIG,Rio de Janeiro/Galeão International Airport,Rio de Janeiro,"[-22.8089, -43.2436]",America/Sao_Paulo
+BOG,El Dorado International Airport,Bogotá,"[4.7017, -74.1469]",America/Bogota
+LIM,Jorge Chávez International Airport,Lima,"[-12.0219, -77.114]",America/Lima
+CCS,Simón Bolívar International Airport,Caracas,"[10.6017, -66.9886]",America/Caracas
+SAL,El Salvador International Airport,San Salvador,"[13.4409, -89.0553]",America/El_Salvador
+PPT,Faa'a International Airport,Papeete,"[-17.5536, -149.6106]",Pacific/Tahiti
+RGN,Yangon International Airport,Yangon,"[16.9074, 96.1328]",Asia/Yangon
+DAC,Hazrat Shahjalal International Airport,Dhaka,"[23.8433, 90.3978]",Asia/Dhaka
+KWI,Kuwait International Airport,Kuwait City,"[29.2266, 47.9688]",Asia/Kuwait
+DOH,Hamad International Airport,Doha,"[25.2731, 51.6084]",Asia/Qatar
+ADL,Adelaide Airport,Adelaide,"[-34.9452, 138.5318]",Australia/Adelaide
+PER,Perth Airport,Perth,"[-31.9403, 115.967]",Australia/Perth
+MRS,Marseille Provence Airport,Marseille,"[43.4393, 5.2148]",Europe/Paris
+CEB,Mactan-Cebu International Airport,Cebu,"[10.3092, 123.9792]",Asia/Manila
+PEN,Penang International Airport,Penang,"[5.2974, 100.2771]",Asia/Kuala_Lumpur
+USM,Koh Samui Airport,Ko Samui,"[9.5475, 100.0619]",Asia/Bangkok
+PNH,Phnom Penh International Airport,Phnom Penh,"[11.5463, 104.8446]",Asia/Phnom_Penh
+HKT,Phuket International Airport,Phuket,"[8.1111, 98.3065]",Asia/Bangkok
+REP,Siem Reap International Airport,Siem Reap,"[13.4105, 103.8137]",Asia/Phnom_Penh
+NBO,Jomo Kenyatta International Airport,Nairobi,"[-1.3192, 36.9276]",Africa/Nairobi
+JRO,Kilimanjaro International Airport,Arusha,"[-3.4294, 37.0741]",Africa/Dar_es_Salaam
+SEZ,Seychelles International Airport,Victoria,"[-4.6717, 55.5122]",Indian/Mahe
+HRE,Robert Gabriel Mugabe International Airport,Harare,"[-17.9319, 31.0929]",Africa/Harare
+LAD,Quatro de Fevereiro International Airport,Luanda,"[-8.8575, 13.2306]",Africa/Luanda
+DKR,Blaise Diagne International Airport,Dakar,"[14.6698, -17.0733]",Africa/Dakar

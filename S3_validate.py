@@ -108,3 +108,19 @@ class ProducerOnboarding:
             return False, f"API call failed: {response.text}"
         except Exception as e:
             return False, str(e)
+
+
+def validate_application_subdirectories(self, bucket):
+    try:
+        expected_subdirs = {"config-dataops", "jks", "runtime"}
+        response = self.s3_client.list_objects_v2(
+            Bucket=bucket,
+            Prefix="application/",
+            Delimiter="/"
+        )
+        found_subdirs = set(prefix['Prefix'].split('/')[-2] for prefix in response.get('CommonPrefixes', []))
+        if expected_subdirs.issubset(found_subdirs):
+            return True, "Application subdirectories are valid."
+        return False, f"Missing one or more expected application subdirectories: {expected_subdirs - found_subdirs}"
+    except Exception as e:
+        return False, str(e)

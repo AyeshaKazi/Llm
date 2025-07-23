@@ -1,21 +1,28 @@
 import React, { useState } from "react";
+import "./home.css"; // We'll add custom styles here
 
 const Home: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
+    setFile(e.target.files && e.target.files[0] ? e.target.files[0] : null);
+    setSuccess(false);
+    setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess(false);
+    setError(null);
+
     if (!file) {
-      alert("Please select an Excel file.");
+      setError("Please select an Excel file.");
       return;
     }
+
     setLoading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -44,28 +51,62 @@ const Home: React.FC = () => {
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
+
+      setSuccess(true);
     } catch (err: any) {
-      alert("Error: " + err.message);
+      setError("Error: " + err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 20 }}>
-      <h2>Excel to PowerPoint Converter</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept=".xls,.xlsx"
-          onChange={handleFileChange}
-          required
-        />
-        <br />
-        <button type="submit" disabled={loading}>
-          {loading ? "Converting..." : "Convert to PPT"}
-        </button>
-      </form>
+    <div className="excel2ppt-container">
+      <div className="excel2ppt-card">
+        <img src="/logo_large.svg" alt="Company Logo" className="company-logo" />
+        <h1>Excel to PowerPoint Converter</h1>
+        <p className="subtitle">
+          Upload your Excel roadmap and instantly get a beautiful PowerPoint presentation.
+        </p>
+        <form onSubmit={handleSubmit} className="upload-form">
+          <label className="file-label">
+            <input
+              type="file"
+              accept=".xls,.xlsx"
+              onChange={handleFileChange}
+              required
+              disabled={loading}
+            />
+            <span>{file ? file.name : "Choose Excel file"}</span>
+          </label>
+          <button
+            type="submit"
+            className="convert-btn"
+            disabled={loading || !file}
+          >
+            {loading ? (
+              <span className="loader"></span>
+            ) : (
+              "Convert to PPT"
+            )}
+          </button>
+        </form>
+        {success && (
+          <div className="success-msg">
+            ✅ Your PowerPoint is ready and downloading!
+          </div>
+        )}
+        {error && (
+          <div className="error-msg">
+            {error}
+          </div>
+        )}
+        <footer>
+          <span>
+            &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
+          </span>
+        </footer>
+      </div>
     </div>
   );
 };

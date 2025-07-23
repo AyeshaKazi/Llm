@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./home.css"; // We'll add custom styles here
+import "./home.css";
 
 const Home: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -61,51 +61,58 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="excel2ppt-container">
-      <div className="excel2ppt-card">
-        <img src="/logo_large.svg" alt="Company Logo" className="company-logo" />
-        <h1>Excel to PowerPoint Converter</h1>
-        <p className="subtitle">
-          Upload your Excel roadmap and instantly get a beautiful PowerPoint presentation.
-        </p>
-        <form onSubmit={handleSubmit} className="upload-form">
-          <label className="file-label">
-            <input
-              type="file"
-              accept=".xls,.xlsx"
-              onChange={handleFileChange}
-              required
-              disabled={loading}
-            />
-            <span>{file ? file.name : "Choose Excel file"}</span>
-          </label>
-          <button
-            type="submit"
-            className="convert-btn"
-            disabled={loading || !file}
-          >
-            {loading ? (
-              <span className="loader"></span>
-            ) : (
-              "Convert to PPT"
-            )}
-          </button>
-        </form>
-        {success && (
-          <div className="success-msg">
-            ✅ Your PowerPoint is ready and downloading!
-          </div>
-        )}
-        {error && (
-          <div className="error-msg">
-            {error}
-          </div>
-        )}
-        <footer>
-          <span>
-            &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
-          </span>
-        </footer>
+    <div className="excel2ppt-bg">
+      <header className="excel2ppt-header">
+        <img src="/logo_large.svg" alt="Company Logo" className="header-logo" />
+      </header>
+      <div className="excel2ppt-container">
+        <div className="excel2ppt-card">
+          <h1 className="project-title">ROADMAP CONVERTOR</h1>
+          <p className="subtitle">
+            Upload Excel. If you don't have the Excel format,{" "}
+            <a
+              href="/template.xlsx"
+              download
+              className="download-link"
+            >
+              download from here
+            </a>
+            .
+          </p>
+          <form onSubmit={handleSubmit} className="upload-form">
+            <label className="file-label">
+              <input
+                type="file"
+                accept=".xls,.xlsx"
+                onChange={handleFileChange}
+                required
+                disabled={loading}
+              />
+              <span>{file ? file.name : "Choose Excel file"}</span>
+            </label>
+            <button
+              type="submit"
+              className="convert-btn"
+              disabled={loading || !file}
+            >
+              {loading ? (
+                <span className="loader"></span>
+              ) : (
+                <b>CONVERT TO PPT AND DOWNLOAD</b>
+              )}
+            </button>
+          </form>
+          {success && (
+            <div className="success-msg">
+              ✅ Your PowerPoint is ready and downloading!
+            </div>
+          )}
+          {error && (
+            <div className="error-msg">
+              {error}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
